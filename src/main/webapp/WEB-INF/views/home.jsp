@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<<<<<<< HEAD
 <title>Home</title>
 </head>
 <body>
@@ -12,5 +13,11 @@
 		<li><a href="/">루트</a></li>
 		<li><a href="/boards.do">게시판관련 페이지</a></li>
 	</ul>
+=======
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>하이</h2>
+>>>>>>> 8c7df93f46692f924117d2328e492d767ee7e235
 </body>
 </html>
