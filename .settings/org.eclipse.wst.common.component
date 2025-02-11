@@ -7,8 +7,11 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
         		
         <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
+<<<<<<< HEAD
         		
         <wb-resource deploy-path="/" source-path="src/main/webapp"/>
+=======
+>>>>>>> 8c7df93f46692f924117d2328e492d767ee7e235
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/bin/generated-sources/annotations"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/bin/generated-test-sources/annotations"/>
         	
