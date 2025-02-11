@@ -5,8 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,8 +36,13 @@ public class BoardRestController {
 		// DTO에 계산 결과 저장
 		parameterDTO.setStart(start);
 		parameterDTO.setEnd(end);
+		
+		// 게시판 카테고리 설정
+		parameterDTO.setBoard_cate("1");
+		
 		// DAO의 메서드 호출
 		List<BoardDTO> boardList = dao.list(parameterDTO);
+		
 		// List를 반환하므로 JSON 배열로 화면에 출력된다.
 		return boardList;
 	}
@@ -70,6 +80,37 @@ public class BoardRestController {
 		
 	}
 
+	@PatchMapping("/increaseLikeCount.do")
+    public Map<String, Integer> increaseLikeCount(@RequestParam("board_idx") String board_idx) {
+        int result = dao.increaseLikeCount(board_idx);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("result", result);
+        return map;
+    }
+
+    @PatchMapping("/increaseViewCount.do")
+    public Map<String, Integer> increaseViewCount(@RequestParam("board_idx") String board_idx) {
+        int result = dao.increaseViewCount(board_idx);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("result", result);
+        return map;
+    }
+
+    @PutMapping("/updateBoard.do")
+    public Map<String, Integer> updateBoard(@RequestBody BoardDTO boardDTO) {
+        int result = dao.updateBoard(boardDTO);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("result", result);
+        return map;
+    }
+
+    @DeleteMapping("/deleteBoard.do")
+    public Map<String, Integer> deleteBoard(@RequestParam("board_idx") String board_idx) {
+        int result = dao.deleteBoard(board_idx);
+        Map<String, Integer> map = new HashMap<>();
+        map.put("result", result);
+        return map;
+    }
 }
 
 

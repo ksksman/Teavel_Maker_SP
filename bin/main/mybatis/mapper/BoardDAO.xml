@@ -10,7 +10,9 @@
 		resultType="com.edu.springboot.restboard.BoardDTO">
 		SELECT * FROM (
 			SELECT Tb.*, rownum rNum FROM (
-				SELECT * FROM boards ORDER BY board_idx DESC
+				SELECT * FROM boards 
+				WHERE board_cate = #{board_cate}
+				ORDER BY board_idx DESC
 				) Tb
 			)
 			WHERE rNum BETWEEN #{start} AND #{end}	
@@ -31,7 +33,7 @@
 	<select id="view"
 		parameterType="com.edu.springboot.restboard.ParameterDTO"
 		resultType="com.edu.springboot.restboard.BoardDTO">
-		SELECT * FROM board WHERE num=#{num}
+		SELECT * FROM boards WHERE board_idx=#{board_idx}
 	</select>
 	<insert id="write"
 		parameterType="com.edu.springboot.restboard.ParameterDTO">
@@ -40,6 +42,24 @@
 		VALUES
 			(seq_board_num.nextval, #{title}, #{content}, #{id}, 0)
 	</insert>
+	<update id="increaseLikeCount" parameterType="String">
+        UPDATE boards SET like_count = like_count + 1 WHERE board_idx = #{board_idx}
+    </update>
+
+    <update id="increaseViewCount" parameterType="String">
+        UPDATE boards SET view_count = view_count + 1 WHERE board_idx = #{board_idx}
+    </update>
+
+    <update id="updateBoard" parameterType="com.edu.springboot.restboard.BoardDTO">
+        UPDATE boards SET 
+            title = #{title},
+            content = #{content}
+        WHERE board_idx = #{board_idx}
+    </update>
+
+    <delete id="deleteBoard" parameterType="String">
+        DELETE FROM boards WHERE board_idx = #{board_idx}
+    </delete>
 </mapper>
 
 

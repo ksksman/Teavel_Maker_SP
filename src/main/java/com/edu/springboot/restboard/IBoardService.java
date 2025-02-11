@@ -2,6 +2,7 @@ package com.edu.springboot.restboard;
 
 import java.util.ArrayList;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface IBoardService {
@@ -15,4 +16,12 @@ public interface IBoardService {
 	public BoardDTO view(ParameterDTO parameterDTO);
 	// 게시물 작성하기
 	public int write(BoardDTO boardDTO);
+    // 게시물 수정하기
+    public int updateBoard(BoardDTO boardDTO);
+    // 게시물 삭제하기
+    public int deleteBoard(@Param("board_idx") String board_idx);
+    // 좋아요 증가
+    public int increaseLikeCount(@Param("board_idx") String board_idx);
+    // 조회수 증가
+    public int increaseViewCount(@Param("board_idx") String board_idx);
 }
