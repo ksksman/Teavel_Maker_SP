@@ -21,7 +21,7 @@ public interface IBoardService {
     // 게시물 삭제하기
     public int deleteBoard(@Param("board_idx") String board_idx);
     // 좋아요 증가
-    public int increaseLikeCount(@Param("board_idx") String board_idx);
+    public int increaseLikeCount(BoardDTO boardDTO);
     // 조회수 증가
-    public int increaseViewCount(@Param("board_idx") String board_idx);
+    public int increaseViewCount(BoardDTO boardDTO);
 }

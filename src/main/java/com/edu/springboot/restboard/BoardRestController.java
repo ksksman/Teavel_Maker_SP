@@ -81,16 +81,16 @@ public class BoardRestController {
 	}
 
 	@PatchMapping("/increaseLikeCount.do")
-    public Map<String, Integer> increaseLikeCount(@RequestParam("board_idx") String board_idx) {
-        int result = dao.increaseLikeCount(board_idx);
+    public Map<String, Integer> increaseLikeCount(BoardDTO boardDTO) {
+        int result = dao.increaseLikeCount(boardDTO);
         Map<String, Integer> map = new HashMap<>();
         map.put("result", result);
         return map;
     }
 
     @PatchMapping("/increaseViewCount.do")
-    public Map<String, Integer> increaseViewCount(@RequestParam("board_idx") String board_idx) {
-        int result = dao.increaseViewCount(board_idx);
+    public Map<String, Integer> increaseViewCount(BoardDTO boardDTO) {
+        int result = dao.increaseViewCount(boardDTO);
         Map<String, Integer> map = new HashMap<>();
         map.put("result", result);
         return map;

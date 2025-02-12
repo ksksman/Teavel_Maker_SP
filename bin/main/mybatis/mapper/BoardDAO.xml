@@ -42,14 +42,19 @@
 		VALUES
 			(seq_board_num.nextval, #{title}, #{content}, #{id}, 0)
 	</insert>
-	<update id="increaseLikeCount" parameterType="String">
+	
+	<!-- 좋아요 증가 -->
+	<update id="increaseLikeCount" 
+		parameterType="com.edu.springboot.restboard.ParameterDTO">
         UPDATE boards SET like_count = like_count + 1 WHERE board_idx = #{board_idx}
     </update>
 
-    <update id="increaseViewCount" parameterType="String">
+	<!-- 조회수 증가 -->
+    <update id="increaseViewCount"  
+		parameterType="com.edu.springboot.restboard.ParameterDTO">
         UPDATE boards SET view_count = view_count + 1 WHERE board_idx = #{board_idx}
     </update>
-
+	<!-- 리뷰 게시물 수정 -->
     <update id="updateBoard" parameterType="com.edu.springboot.restboard.BoardDTO">
         UPDATE boards SET 
             title = #{title},
