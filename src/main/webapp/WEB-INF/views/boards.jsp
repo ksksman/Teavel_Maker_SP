@@ -26,6 +26,7 @@
 	<fieldset>
 		<legend>페이지별 레코드 조회</legend>
 		<form action="restBoardList.do">
+			<input type="hidden" name="board_cate" value="1" />
 			<select name="pageNum" id="">
 			<c:forEach begin="1" end="20" var="p">
 				<option value="${p }">${p }</option>
@@ -51,12 +52,12 @@
 		<legend>상세내용 조회</legend>
 		<form action="restBoardView.do">
 			<form action="restBoardView.do">
-			일련번호 : <input type="number" name="num" />
+			일련번호 : <input type="number" name="board_idx" />
 			<input type="submit" value="요청하기"/>
 		</form>
 	</fieldset>
 	<fieldset>
-		<legend>[퀴즈] 작성하기</legend>
+		<legend> 작성하기</legend>
 		<form action="restBoardWrite.do" method="post">
 			<form action="restBoardView.do">
 			아이디 : <input type="text" name="id" value="education" />
