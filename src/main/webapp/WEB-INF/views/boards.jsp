@@ -24,9 +24,21 @@
 }
 	</style>
 	<fieldset>
-		<legend>페이지별 레코드 조회</legend>
+		<legend>리뷰 게시판 페이지별 레코드 조회</legend>
 		<form action="restBoardList.do">
 			<input type="hidden" name="board_cate" value="1" />
+			<select name="pageNum" id="">
+			<c:forEach begin="1" end="20" var="p">
+				<option value="${p }">${p }</option>
+			</c:forEach>
+			</select>
+			<input type="submit" value="요청하기" />
+		</form>
+	</fieldset>
+	<fieldset>
+		<legend>공지 게시판 페이지별 레코드 조회</legend>
+		<form action="restBoardList.do">
+			<input type="hidden" name="board_cate" value="3" />
 			<select name="pageNum" id="">
 			<c:forEach begin="1" end="20" var="p">
 				<option value="${p }">${p }</option>
