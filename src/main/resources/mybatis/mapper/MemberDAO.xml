@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.edu.springboot.jdbc.IMemberDAO">
+
+    <!-- 전체 회원 조회 -->
+    <select id="selectAll" resultType="com.edu.springboot.jdbc.MemberDTO">
+        SELECT * FROM USERS
+    </select>
+
+    <!-- 이메일로 특정 회원 조회 -->
+    <select id="selectByEmail" parameterType="string" resultType="com.edu.springboot.jdbc.MemberDTO">
+        SELECT * FROM USERS WHERE EMAIL = #{email}
+    </select>
+
+    <!-- 회원 등록 -->
+    <insert id="insert" parameterType="com.edu.springboot.jdbc.MemberDTO">
+        INSERT INTO USERS (EMAIL, PASSWORD, NICKNAME, AGE, GENDER, PHONE_NUMBER, MARKETING_CONSENT, RECOMMENDED_FRIEND, ACCOUNT_CREATED_AT, UPDATED_AT)
+        VALUES (#{email}, #{password}, #{nickname}, #{age}, #{gender}, #{phoneNumber}, #{marketingConsent}, #{recommendedFriend}, CURRENT_TIMESTAMP, SYSDATE)
+    </insert>
+
+    <!-- 회원 정보 업데이트 -->
+    <update id="update" parameterType="com.edu.springboot.jdbc.MemberDTO">
+        UPDATE USERS
+        SET PASSWORD = #{password}, NICKNAME = #{nickname}, AGE = #{age}, GENDER = #{gender}, PHONE_NUMBER = #{phoneNumber}, MARKETING_CONSENT = #{marketingConsent}, UPDATED_AT = SYSDATE
+        WHERE EMAIL = #{email}
+    </update>
+
+    <!-- 회원 삭제 -->
+    <delete id="delete" parameterType="com.edu.springboot.jdbc.MemberDTO">
+        DELETE FROM USERS WHERE EMAIL = #{email}
+    </delete>
+
+    <!-- ✅ 로그인: 이메일로 회원 정보 조회 -->
+    <select id="login" parameterType="string" resultType="com.edu.springboot.jdbc.MemberDTO">
+        SELECT user_id, email, password, nickname
+        FROM USERS
+        WHERE email = #{email}
+    </select>
+
+</mapper>

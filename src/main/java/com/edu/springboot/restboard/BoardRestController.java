@@ -38,7 +38,7 @@ public class BoardRestController {
 		parameterDTO.setEnd(end);
 		
 		// 게시판 카테고리 설정
-		parameterDTO.setBoard_cate("1");
+		parameterDTO.setBoard_cate(parameterDTO.getBoard_cate());
 		
 		// DAO의 메서드 호출
 		List<BoardDTO> boardList = dao.list(parameterDTO);
@@ -61,6 +61,9 @@ public class BoardRestController {
 				parameterDTO.getSearchWord().add(str);
 			}
 		}
+		// 게시판 카테고리 설정
+		parameterDTO.setBoard_cate(parameterDTO.getBoard_cate());
+		
 		List<BoardDTO> searchList = dao.search(parameterDTO);
 		return searchList;
 	}
