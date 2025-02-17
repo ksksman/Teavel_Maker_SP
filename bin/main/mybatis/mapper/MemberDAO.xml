@@ -10,9 +10,13 @@
     </select>
 
     <!-- 이메일로 특정 회원 조회 -->
-    <select id="selectByEmail" parameterType="string" resultType="com.edu.springboot.jdbc.MemberDTO">
-        SELECT * FROM USERS WHERE EMAIL = #{email}
-    </select>
+	<select id="selectByEmail" parameterType="string" resultType="com.edu.springboot.jdbc.MemberDTO">
+	    SELECT user_id, email, nickname, birthdate, gender, phone_number, 
+	           marketing_consent, recommended_friend, account_created_at, updated_at
+	    FROM USERS 
+	    WHERE email = #{email}
+	</select>
+
 
     <!-- 회원 등록 -->
     <insert id="insert" parameterType="com.edu.springboot.jdbc.MemberDTO">
@@ -32,11 +36,13 @@
         DELETE FROM USERS WHERE EMAIL = #{email}
     </delete>
 
-    <!-- ✅ 로그인: 이메일로 회원 정보 조회 -->
-    <select id="login" parameterType="string" resultType="com.edu.springboot.jdbc.MemberDTO">
-        SELECT user_id, email, password, nickname
-        FROM USERS
-        WHERE email = #{email}
-    </select>
+    <!-- 로그인: 이메일로 회원 정보 조회 -->
+	<select id="login" parameterType="string" resultType="com.edu.springboot.jdbc.MemberDTO">
+	    SELECT user_id, email, password, nickname, birthdate, gender, phone_number, 
+	           marketing_consent, recommended_friend, account_created_at, updated_at
+	    FROM USERS 
+	    WHERE email = #{email}
+	</select>
+
 
 </mapper>
