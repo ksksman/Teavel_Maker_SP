@@ -34,13 +34,25 @@
 		parameterType="com.edu.springboot.restboard.ParameterDTO"
 		resultType="com.edu.springboot.restboard.BoardDTO">
 		SELECT * FROM boards
-		<if test="searchWord!=null">
-			WHERE
-			<foreach collection="searchWord" item="str"
-				open="(" close=")" separator="or">
-				${searchField} like '%' || #{str} || '%'
-			</foreach>
-		</if>	
+		WHERE board_cate = #{board_cate}
+		<if test="searchWord != null and searchWord.size() > 0">
+	        AND (
+	            <foreach collection="searchWord" item="str" separator="OR">
+	                <choose>
+	                    <when test="searchField == 'title'">
+	                        title LIKE '%' || #{str} || '%'
+	                    </when>
+	                    <when test="searchField == 'nickname'">
+	                        nickname LIKE '%' || #{str} || '%'
+	                    </when>
+	                    <!-- 필요하면 다른 검색 필드 추가 가능 -->
+	                    <otherwise>
+	                        1=0 <!-- 잘못된 필드가 들어왔을 경우 SQL 실행되지 않도록 -->
+	                    </otherwise>
+	                </choose>
+	            </foreach>
+	        )
+	    </if>	
 		ORDER BY board_idx DESC
 	</select>
 	<select id="view"
