@@ -114,6 +114,22 @@ public class BoardRestController {
         map.put("result", result);
         return map;
     }
+    
+    @GetMapping("/popularReviews.do")
+    public List<BoardDTO> getPopularReviews(ParameterDTO parameterDTO) {
+    	// 한 페이지에 출력할 게시물의 수 (하드 코딩)
+		int pageSize = 10;
+		// 페이지 번호
+		int pageNum = parameterDTO.getPageNum()==null ? 1 : 
+			Integer.parseInt(parameterDTO.getPageNum());
+		// 게시물의 구간 계산
+		int start = (pageNum-1) * pageSize + 1;
+		int end = pageNum * pageSize;
+        parameterDTO.setStart(start);
+        parameterDTO.setEnd(end);
+
+        return dao.getPopularReviews(parameterDTO);
+    }
 }
 
 

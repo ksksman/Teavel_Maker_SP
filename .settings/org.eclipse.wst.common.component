@@ -1,31 +1,11 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    	
-    <wb-module deploy-name="TravelMaker_sp">
-        		
-        <property name="context-root" value="TravelMaker_sp"/>
-        		
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
-        		
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
-<<<<<<< HEAD
-        		
-        <wb-resource deploy-path="/" source-path="src/main/webapp"/>
-=======
->>>>>>> 8c7df93f46692f924117d2328e492d767ee7e235
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bin/generated-sources/annotations"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bin/generated-test-sources/annotations"/>
-        	
-    </wb-module>
-    
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 <project-modules id="moduleCoreId" project-version="1.5.0">
-	<wb-module deploy-name="TravelMaker_SP">
-		<property name="context-root" value="TravelMaker_SP"/>
-		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
-		<wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
-		<wb-resource deploy-path="/" source-path="src/main/webapp"/>
-	</wb-module>
->>>>>>> 9fc8c5e9c80adcf5fc29ab47eacd678015be479d
+    <wb-module deploy-name="TravelMaker_SP">
+        <property name="context-root" value="TravelMaker_SP"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/resources"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="src/main/java"/>
+        <wb-resource deploy-path="/" source-path="src/main/webapp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bin/generated-sources/annotations"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/bin/generated-test-sources/annotations"/>
+    </wb-module>
 </project-modules>

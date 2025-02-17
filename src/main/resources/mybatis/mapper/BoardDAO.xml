@@ -17,6 +17,19 @@
 			)
 			WHERE rNum BETWEEN #{start} AND #{end}	
 	</select>
+	
+	<select id="getPopularReviews" 
+		parameterType="com.edu.springboot.restboard.ParameterDTO" 
+		resultType="com.edu.springboot.restboard.BoardDTO">
+	    SELECT * FROM (
+	        SELECT Tb.*, rownum rNum FROM (
+	            SELECT * FROM boards 
+	            WHERE board_cate = #{board_cate} AND like_count >= 50
+	            ORDER BY board_idx DESC
+	        ) Tb
+	    ) WHERE rNum BETWEEN #{start} AND #{end}
+	</select>
+	
 	<select id="search"
 		parameterType="com.edu.springboot.restboard.ParameterDTO"
 		resultType="com.edu.springboot.restboard.BoardDTO">

@@ -1,6 +1,8 @@
 package com.edu.springboot.restboard;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,4 +26,6 @@ public interface IBoardService {
     public int increaseLikeCount(BoardDTO boardDTO);
     // 조회수 증가
     public int increaseViewCount(BoardDTO boardDTO);
+    // 전체글 인기글 보기
+    public ArrayList<BoardDTO> getPopularReviews(ParameterDTO parameterDTO);
 }
