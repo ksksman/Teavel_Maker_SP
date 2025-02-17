@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 public class MailService {
 
     private static final Logger logger = LoggerFactory.getLogger(MailService.class);
-
     private final JavaMailSender mailSender;
 
     @Value("${spring.mail.username}") // ✅ 발신자 이메일 환경 변수로 설정
