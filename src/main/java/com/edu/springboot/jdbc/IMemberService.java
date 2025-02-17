@@ -14,4 +14,5 @@ public interface IMemberService {
 
 	// ✅ 로그인 메서드 추가 (이게 없으면 오류 발생)
 	public boolean login(MemberDTO memberDTO);
+	MemberDTO selectByNickname(String nickname);
 }
