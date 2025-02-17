@@ -15,5 +15,13 @@ public interface IMemberDAO {
 
     // ✅ 닉네임으로 회원 조회
     MemberDTO selectByNickname(@Param("nickname") String nickname);
-}
 
+    // ✅ 비밀번호 변경
+    int updatePassword(@Param("email") String email, @Param("password") String password);
+
+    // ✅ 비밀번호 찾기 - 인증번호 저장 (추가)
+    int updateVerificationCode(@Param("email") String email, @Param("code") String code);
+
+    // ✅ 비밀번호 찾기 - 인증번호 조회 (추가)
+    String getVerificationCode(@Param("email") String email);
+}
