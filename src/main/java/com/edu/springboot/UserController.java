@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.edu.springboot.jdbc.MailService;
 
 @RestController
 @RequestMapping("/api/user")
@@ -94,5 +95,37 @@ public class UserController {
             return ResponseEntity.ok("사용 가능한 닉네임입니다.");
         }
     }
+ // ✅ 1. 이메일로 인증번호 전송 (DB 저장 X)
+    @PostMapping("/find-password")
+    public ResponseEntity<String> sendVerificationCode(@RequestParam("email") String email) {
+        boolean success = userService.sendVerificationCode(email);
+        if (success) {
+            return ResponseEntity.ok("이메일로 인증번호가 전송되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("가입되지 않은 이메일입니다.");
+        }
+    }
 
+    // ✅ 2. 인증번호 검증 (DB 조회 X)
+    @PostMapping("/verify-code")
+    public ResponseEntity<String> verifyCode(@RequestParam("email") String email, @RequestParam("code") String code) {
+        boolean isValid = userService.verifyCode(email, code);
+        if (isValid) {
+            return ResponseEntity.ok("인증 성공!");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("인증번호가 일치하지 않습니다.");
+        }
+    }
+ // ✅ 3. 비밀번호 재설정 API 추가
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam("email") String email, @RequestParam("newPassword") String newPassword) {
+        int result = userService.updatePassword(email, newPassword);
+        
+        if (result > 0) {
+            return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("비밀번호 변경 실패.");
+        }
+    }
 }
+

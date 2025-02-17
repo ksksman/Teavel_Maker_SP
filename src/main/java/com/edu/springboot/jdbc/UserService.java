@@ -1,14 +1,23 @@
 package com.edu.springboot.jdbc;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class UserService implements IMemberService {
 
     @Autowired
     private IMemberDAO memberDAO;
+
+    @Autowired
+    private MailService mailService; // 이메일 전송 서비스 추가
+
+    // ✅ 인증번호 저장을 위한 캐시 (서버에서만 유지)
+    private final ConcurrentHashMap<String, String> verificationCache = new ConcurrentHashMap<>();
 
     @Override
     public boolean login(MemberDTO memberDTO) {
@@ -89,5 +98,50 @@ public class UserService implements IMemberService {
     @Override
     public MemberDTO selectByNickname(String nickname) {
         return memberDAO.selectByNickname(nickname);
+    }
+
+    // ✅ 비밀번호 찾기 - 이메일로 인증번호 전송 (DB 저장 X)
+    public boolean sendVerificationCode(String email) {
+        MemberDTO member = memberDAO.selectByEmail(email);
+        if (member == null) {
+            return false; // 가입된 이메일이 아닐 경우
+        }
+
+        // 6자리 랜덤 인증번호 생성
+        String code = String.format("%06d", new Random().nextInt(1000000));
+
+        // ✅ 인증번호를 캐시에 저장 (이메일 -> 인증번호)
+        verificationCache.put(email, code);
+
+        // ✅ 이메일 전송
+        mailService.sendEmail(email, "비밀번호 찾기 인증번호", "인증번호: " + code);
+
+        return true;
+    }
+
+    // ✅ 비밀번호 찾기 - 인증번호 확인 (DB 조회 X)
+    public boolean verifyCode(String email, String code) {
+        // ✅ 캐시에서 인증번호 조회 및 검증
+        String storedCode = verificationCache.get(email);
+        return storedCode != null && storedCode.equals(code);
+    }
+
+    // ✅ 비밀번호 변경 메서드 추가
+    @Transactional
+    public int updatePassword(String email, String newPassword) {
+        System.out.println("🔹 updatePassword 실행됨: email = " + email + ", newPassword = " + newPassword);
+        
+        MemberDTO member = memberDAO.selectByEmail(email);
+        if (member == null) {
+            System.out.println("❌ 이메일이 DB에 없음: " + email);
+            return 0; // 이메일이 DB에 없으면 업데이트하지 않음
+        }
+
+        // 🚀 비밀번호 해싱 (선택 사항: 보안을 위해 추가 가능)
+        String hashedPassword = newPassword; // 나중에 BCrypt 적용 가능
+
+        int result = memberDAO.updatePassword(email, hashedPassword);
+        System.out.println("🔹 updatePassword 실행 결과: " + result);
+        return result;
     }
 }
