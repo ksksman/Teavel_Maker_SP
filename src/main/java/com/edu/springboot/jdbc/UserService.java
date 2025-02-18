@@ -63,13 +63,13 @@ public class UserService implements IMemberService {
         }
 
         // 🚀 `marketingConsent` 기본값 설정
-        if (memberDTO.getMarketingConsent() == null) {
-            memberDTO.setMarketingConsent("0");
+        if (memberDTO.getMarketing_Consent() == null) {
+            memberDTO.setMarketing_Consent("0");
         }
 
         // 🚀 `recommendedFriend` 기본값 설정
-        if (memberDTO.getRecommendedFriend() == null) {
-            memberDTO.setRecommendedFriend("");
+        if (memberDTO.getRecommended_Friend() == null) {
+            memberDTO.setRecommended_Friend("");
         }
 
         // 실제 DB 삽입 실행

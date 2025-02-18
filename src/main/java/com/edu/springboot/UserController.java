@@ -1,7 +1,13 @@
 package com.edu.springboot;
 
+import com.edu.springboot.jdbc.IMemberDAO;
 import com.edu.springboot.jdbc.MemberDTO;
 import com.edu.springboot.jdbc.UserService;
+import com.edu.springboot.util.JwtUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +20,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private IMemberDAO memberDAO;
 
     // 서버 상태 확인용 테스트 API
     @GetMapping("/test")
@@ -21,20 +30,55 @@ public class UserController {
         return ResponseEntity.ok("Spring Boot API is running!");
     }
 
-    // 로그인 API (POST 요청)
+ // ✅ 로그인 API (JWT 발급 및 쿠키 설정)
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody MemberDTO member) {
-        if (member == null || member.getEmail() == null || member.getPassword() == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("이메일과 비밀번호를 입력해주세요.");
+    public String login(@RequestBody MemberDTO memberDTO, HttpServletResponse response) {
+        MemberDTO dbMember = memberDAO.login(memberDTO.getEmail());
+
+        if (dbMember == null || !dbMember.getPassword().equals(memberDTO.getPassword())) {
+            return "아이디 또는 비밀번호가 틀렸습니다.";
         }
 
-        boolean success = userService.login(member);
+        // ✅ JWT 토큰 생성
+        String token = JwtUtil.generateToken(memberDTO.getEmail());
 
-        if (success) {
-            return ResponseEntity.ok("로그인 성공");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 틀렸습니다.");
+        // ✅ HttpOnly 쿠키에 JWT 저장 (JavaScript에서 접근 불가, 보안 강화)
+        Cookie cookie = new Cookie("authToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true); // HTTPS 환경에서만 작동 (개발 환경에서는 false로 변경 가능)
+        cookie.setPath("/");
+        cookie.setMaxAge(86400); // 1일 (초 단위)
+        response.addCookie(cookie);
+
+        return "로그인 성공";
+    }
+
+    // ✅ 로그인 상태 확인 API (쿠키에서 JWT 검증)
+    @GetMapping("/me")
+    public MemberDTO getUser(@CookieValue(value = "authToken", required = false) String token) {
+        if (token == null) {
+            return null; // 로그인되지 않음
         }
+
+        String email = JwtUtil.validateToken(token);
+        if (email == null) {
+            return null; // 유효하지 않은 토큰
+        }
+
+        return memberDAO.selectByEmail(email); // 이메일로 회원 정보 조회
+    }
+
+    // ✅ 로그아웃 (쿠키 삭제)
+    @PostMapping("/logout")
+    public String logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("authToken", null);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // 쿠키 삭제
+        response.addCookie(cookie);
+
+        return "로그아웃 성공";
     }
 
     // 이메일 중복 확인 API (회원가입 전에 호출)
