@@ -61,11 +61,11 @@
 		SELECT * FROM boards WHERE board_idx=#{board_idx}
 	</select>
 	<insert id="write"
-		parameterType="com.edu.springboot.restboard.ParameterDTO">
-		INSERT INTO board
-			(num, title, content, id, visitcount)
+		parameterType="com.edu.springboot.restboard.BoardDTO">
+		INSERT INTO boards
+			(board_idx, board_cate, nickname, title, content, post_date, view_count, like_count, attached_file)
 		VALUES
-			(seq_board_num.nextval, #{title}, #{content}, #{id}, 0)
+			(boards_seq.nextval, #{board_cate}, #{nickname}, #{title}, #{content}, SYSDATE, 0, 0, #{attached_file})
 	</insert>
 	
 	<!-- 좋아요 증가 -->

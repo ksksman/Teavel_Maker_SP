@@ -1,10 +1,12 @@
 package com.edu.springboot.restboard;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -75,12 +77,13 @@ public class BoardRestController {
 	}
 	
 	@PostMapping("/restBoardWrite.do")
-	public Map<String, Integer> restBoardWrite(BoardDTO boardDTO) {
+	public Map<String, Integer> restBoardWrite(@RequestBody BoardDTO boardDTO) {
+			    		
 		int result = dao.write(boardDTO);
+					
 		Map<String, Integer> map = new HashMap<>();
 		map.put("result", result);
 		return map;
-		
 	}
 
 	@PatchMapping("/increaseLikeCount.do")

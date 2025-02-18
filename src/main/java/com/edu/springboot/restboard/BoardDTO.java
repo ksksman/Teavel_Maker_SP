@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class BoardDTO {
 	private String board_idx;
-	private String board_cate;
+	private int board_cate;
 	private String nickname;
 	private String title;
 	private String content;

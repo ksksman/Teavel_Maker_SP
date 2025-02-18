@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface IQACommentService {
     List<QACommentDTO> getComments(@Param("qa_id") int qa_id);
-    int addComment(QACommentDTO comment);
+    public int addComment(QACommentDTO comment);
     int updateComment(QACommentDTO comment);
     int deleteComment(@Param("comment_idx") int comment_idx);
 
