@@ -64,8 +64,8 @@ dependencies {
     
     
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	 
-	//  XML 파싱 (한국관광공사 API 응답 처리)
+    
+   //  XML 파싱 (한국관광공사 API 응답 처리)
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 }
 
