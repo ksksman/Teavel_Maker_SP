@@ -24,4 +24,6 @@ public interface IMemberDAO {
 
     // ✅ 비밀번호 찾기 - 인증번호 조회
     String getVerificationCode(@Param("email") String email);
+    
+    
 }
