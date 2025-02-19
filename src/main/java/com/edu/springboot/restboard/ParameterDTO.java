@@ -17,5 +17,5 @@ public class ParameterDTO {
 	private int end;
 	
 	// 게시판 카테고리 추가
-	private String board_cate;
+	private Integer board_cate;
 }
