@@ -24,4 +24,12 @@ public class MemberDTO {
     public MemberDTO(String email) {
         this.email = email;
     }
+    
+    public String getPhoneNumber() {
+        return phone_Number;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phone_Number = phoneNumber;
+    }
 }
