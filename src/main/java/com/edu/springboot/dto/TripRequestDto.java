@@ -1,15 +1,11 @@
 package com.edu.springboot.dto;
 
 public class TripRequestDto {
-    private int tripId;      // DB auto-generated (시퀀스 사용)
-    private int userId;      // 여행 생성자 ID
-    private String title;    // 여행 제목
-    private String startDate; // 시작 날짜 ("YYYY-MM-DD")
-    private String endDate;   // 종료 날짜 ("YYYY-MM-DD")
-
-    // 기본 생성자
-    public TripRequestDto() {
-    }
+    private int tripId; // DB에서 auto-generated (시퀀스 사용)
+    private int userId; // 로그인된 사용자 ID
+    private String title; // 여행 제목
+    private String startDate; // "YYYY-MM-DD" 형식
+    private String endDate;   // "YYYY-MM-DD" 형식
 
     // Getters & Setters
     public int getTripId() {
