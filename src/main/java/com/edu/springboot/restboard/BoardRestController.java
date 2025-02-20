@@ -1,11 +1,14 @@
 package com.edu.springboot.restboard;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -132,6 +136,26 @@ public class BoardRestController {
         parameterDTO.setEnd(end);
 
         return dao.getPopularReviews(parameterDTO);
+    }
+    
+    @PostMapping("/uploadImage")
+    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("image") MultipartFile file) {
+        try {
+            // ✅ 파일 저장 경로 설정
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String filePath = "C:/upload/" + fileName; // 서버 저장 경로
+
+            File dest = new File(filePath);
+            file.transferTo(dest);
+
+            // ✅ 프론트엔드에서 사용할 URL 반환
+            Map<String, String> response = new HashMap<>();
+            response.put("imageUrl", "http://localhost:8586/uploads/" + fileName);
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 }
 

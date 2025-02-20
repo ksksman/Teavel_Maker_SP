@@ -55,6 +55,7 @@
 	    </if>	
 		ORDER BY board_idx DESC
 	</select>
+	
 	<select id="view"
 		parameterType="com.edu.springboot.restboard.ParameterDTO"
 		resultType="com.edu.springboot.restboard.BoardDTO">
