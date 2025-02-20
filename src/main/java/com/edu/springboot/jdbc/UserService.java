@@ -67,11 +67,6 @@ public class UserService implements IMemberService {
             memberDTO.setMarketingConsent("0");
         }
 
-        // 🚀 `recommendedFriend` 기본값 설정
-        if (memberDTO.getRecommendedFriend() == null) {
-            memberDTO.setRecommendedFriend("");
-        }
-
         // 실제 DB 삽입 실행
         int result = memberDAO.insert(memberDTO);
         System.out.println("✅ 회원가입 결과 (DB 삽입 성공 여부): " + result);

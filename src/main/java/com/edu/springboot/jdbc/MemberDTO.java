@@ -13,7 +13,6 @@ public class MemberDTO {
     private String gender;
     private String phoneNumber;
     private String marketingConsent = "0"; // 🚀 기본값을 "0"으로 설정하여 NULL 방지
-    private String recommendedFriend = ""; // 🚀 NULL 대신 빈 문자열로 기본값 설정
     private java.sql.Timestamp accountCreatedAt;
     private java.sql.Date updatedAt;
 
