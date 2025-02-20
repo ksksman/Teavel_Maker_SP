@@ -1,28 +1,42 @@
 package com.edu.springboot.oauth;
 
 import org.apache.ibatis.annotations.*;
-
 import com.edu.springboot.jdbc.MemberDTO;
 
 @Mapper
 public interface OAuthUserDAO {
 
-    // ✅ 기존 OAuth 정보 조회 (providerName과 providerUserId 기준)
-    @Select("SELECT * FROM User_OAuth WHERE provider_name = #{providerName} AND provider_user_id = #{providerUserId}")
+    // ✅ 기존 OAuth 사용자 조회 (OAuthUserDTO 매핑)
+    @Select("SELECT OAUTH_ID, USER_ID, PROVIDER_NAME, PROVIDER_USER_ID, LINKED_AT, NICKNAME FROM USER_OAUTH " +
+            "WHERE PROVIDER_NAME = #{providerName} AND PROVIDER_USER_ID = #{providerUserId}")
+    @Results(id = "OAuthUserResultMap", value = {
+        @Result(column = "OAUTH_ID", property = "oauthId"),
+        @Result(column = "USER_ID", property = "userId"),
+        @Result(column = "PROVIDER_NAME", property = "providerName"),
+        @Result(column = "PROVIDER_USER_ID", property = "providerUserId"),
+        @Result(column = "LINKED_AT", property = "linkedAt"),
+        @Result(column = "NICKNAME", property = "nickname")
+    })
     OAuthUserDTO findByProviderAndProviderUserId(@Param("providerName") String providerName, @Param("providerUserId") String providerUserId);
 
-    // ✅ USERS 테이블에서 user_id 조회 (이메일 기준)
-    @Select("SELECT user_id FROM Users WHERE email = #{email}")
-    Long findUserIdByEmail(@Param("email") String email);
+    // ✅ USERS 테이블에서 user_id 조회 (이메일 기준, 존재하면 가져오기)
+    @Select("SELECT user_id FROM USERS WHERE email = #{email}")
+    Integer findUserIdByEmail(@Param("email") String email);
 
-    // ✅ USERS 테이블에 새 유저 추가 (user_id 자동 증가)
-    @Insert("INSERT INTO Users (email, password, nickname, birthdate, gender, phone_number, marketing_consent, recommended_friend, updated_at) " +
-            "VALUES (#{email}, 'OAUTH_USER', #{nickname}, #{birthdate}, #{gender}, #{phoneNumber}, #{marketingConsent}, #{recommendedFriend}, CURRENT_DATE)")
+    // ✅ USERS 테이블에 SNS 회원 추가 (기본값 적용)
+    @Insert("INSERT INTO USERS (email, password, nickname, birthdate, gender, phone_number, marketing_consent, updated_at) " +
+            "VALUES (#{email}, 'OAUTH_USER', #{nickname}, TO_DATE('2000-01-01', 'YYYY-MM-DD'), 'M', '000-0000-0000', '0', CURRENT_DATE)")
     @Options(useGeneratedKeys = true, keyProperty = "userId")
-    void createUser(MemberDTO user);
+    int createUser(MemberDTO user);
 
     // ✅ USER_OAUTH 테이블에 OAuth 정보 추가
-    @Insert("INSERT INTO User_OAuth (oauth_id, user_id, provider_name, provider_user_id, linked_at) " +
-            "VALUES (oauth_seq.NEXTVAL, #{userId}, #{providerName}, #{providerUserId}, CURRENT_TIMESTAMP)")
+    @Insert("INSERT INTO USER_OAUTH (OAUTH_ID, USER_ID, PROVIDER_NAME, PROVIDER_USER_ID, LINKED_AT, NICKNAME) " +
+            "VALUES (oauth_seq.NEXTVAL, #{userId}, #{providerName}, #{providerUserId}, CURRENT_TIMESTAMP, #{nickname})")
     void saveOAuthUser(OAuthUserDTO oauthUser);
+
+    // ✅ USER_OAUTH 테이블 닉네임 업데이트 (닉네임이 변경된 경우)
+    @Update("UPDATE USER_OAUTH SET NICKNAME = #{nickname} WHERE PROVIDER_USER_ID = #{providerUserId}")
+    void updateNickname(@Param("nickname") String nickname, @Param("providerUserId") String providerUserId);
+
+	void updateNickname(OAuthUserDTO existingUser);
 }

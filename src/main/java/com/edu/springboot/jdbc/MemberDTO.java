@@ -9,10 +9,10 @@ public class MemberDTO {
     private String email;
     private String password;
     private String nickname;
-    private LocalDate birthdate;
-    private String gender;
-    private String phoneNumber;
-    private String marketingConsent = "0"; // 🚀 기본값을 "0"으로 설정하여 NULL 방지
+    private LocalDate birthdate = LocalDate.of(2000, 1, 1); // 기본값 설정
+    private String gender = "M"; // ✅ 기본값을 'M'으로 변경 (제약조건 위배 방지)
+    private String phoneNumber = "000-0000-0000"; // 기본값 설정
+    private String marketingConsent = "0"; // 기본값 설정
     private java.sql.Timestamp accountCreatedAt;
     private java.sql.Date updatedAt;
 

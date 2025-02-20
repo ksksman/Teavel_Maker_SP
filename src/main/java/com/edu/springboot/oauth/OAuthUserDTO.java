@@ -1,28 +1,27 @@
 package com.edu.springboot.oauth;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import java.sql.Timestamp;
 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class OAuthUserDTO {
-    private Long oauthId;
-    private Long userId;
+    private Integer oauthId;          // ✅ Long → Integer (DB와 일관성 유지)
+    private Integer userId;           // ✅ Integer로 통일 (User 테이블과 일관성 유지)
     private String providerName;
     private String providerUserId;
     private Timestamp linkedAt;
+    private String nickname;
 
-    // 추가 생성자 (DB 저장 시 linkedAt 자동 설정)
-    public OAuthUserDTO(Long userId, String providerName, String providerUserId) {
+    // ✅ 새로운 OAuth 계정 생성 시 기본값 포함 생성자
+    public OAuthUserDTO(Integer userId, String providerName, String providerUserId, String nickname) {
         this.userId = userId;
         this.providerName = providerName;
         this.providerUserId = providerUserId;
-        this.linkedAt = new Timestamp(System.currentTimeMillis()); // 현재 시간 설정
+        this.nickname = nickname;
+        this.linkedAt = new Timestamp(System.currentTimeMillis()); // 🔹 현재 시간 자동 설정
     }
 }
