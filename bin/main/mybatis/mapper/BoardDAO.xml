@@ -91,6 +91,17 @@
     <delete id="deleteBoard" parameterType="String">
         DELETE FROM boards WHERE board_idx = #{board_idx}
     </delete>
+    
+    
+    <select id="getTopLikedReviews" 
+    	resultType="com.edu.springboot.restboard.BoardDTO">
+	    SELECT * FROM (
+	        SELECT * FROM boards 
+	        WHERE board_cate = 1 
+	        ORDER BY like_count DESC
+	    ) WHERE ROWNUM &lt;= 3
+	</select>
+	    
 </mapper>
 
 

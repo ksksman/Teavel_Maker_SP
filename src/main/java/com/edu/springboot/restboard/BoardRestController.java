@@ -39,6 +39,7 @@ public class BoardRestController {
 		// 게시물의 구간 계산
 		int start = (pageNum-1) * pageSize + 1;
 		int end = pageNum * pageSize;
+		
 		// DTO에 계산 결과 저장
 		parameterDTO.setStart(start);
 		parameterDTO.setEnd(end);
@@ -49,8 +50,20 @@ public class BoardRestController {
 		// DAO의 메서드 호출
 		List<BoardDTO> boardList = dao.list(parameterDTO);
 		
-		// List를 반환하므로 JSON 배열로 화면에 출력된다.
 		return boardList;
+	}
+	
+	@GetMapping("/boardTotalLength.do")
+	public List<BoardDTO> boardTotalLength(HttpServletRequest req, 
+			ParameterDTO parameterDTO) {
+		
+		// 게시판 카테고리 설정
+		parameterDTO.setBoard_cate(parameterDTO.getBoard_cate());
+		
+		// DAO의 메서드 호출
+		List<BoardDTO> boardLen = dao.list(parameterDTO);
+		
+		return boardLen;
 	}
 	
 	@GetMapping("/restBoardSearch.do")
@@ -138,25 +151,12 @@ public class BoardRestController {
         return dao.getPopularReviews(parameterDTO);
     }
     
-    @PostMapping("/uploadImage")
-    public ResponseEntity<Map<String, String>> uploadImage(@RequestParam("image") MultipartFile file) {
-        try {
-            // ✅ 파일 저장 경로 설정
-            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String filePath = "C:/upload/" + fileName; // 서버 저장 경로
-
-            File dest = new File(filePath);
-            file.transferTo(dest);
-
-            // ✅ 프론트엔드에서 사용할 URL 반환
-            Map<String, String> response = new HashMap<>();
-            response.put("imageUrl", "http://localhost:8586/uploads/" + fileName);
-
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    // ALHomePage.jsx 에서 인기 Top3 후기글 요청하는 API
+    @GetMapping("/topLikedReviews.do")
+    public List<BoardDTO> getTopLikedReviews() {
+        return dao.getTopLikedReviews();
     }
+    
 }
 
 

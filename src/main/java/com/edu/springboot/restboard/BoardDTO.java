@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import lombok.Data;
 
-// 모델1 방식의 회원제 게시판에서 생성한 board테이블 사용
+// boards 테이블DTO
 @Data
 public class BoardDTO {
 	private String board_idx;
