@@ -19,8 +19,10 @@ public class TripService {
     public void createTrip(TripRequestDto tripRequest) {
         // TRIP 테이블에 여행 정보 저장
         tripMapper.insertTrip(tripRequest);
-        // 기본 리뷰 행을 TRIP_REVIEW 테이블에 INSERT (후기는 NULL, 상태는 '계획중')
+        // TRIP_REVIEW 테이블에 기본 리뷰 행 삽입 (후기는 NULL, 상태는 '계획중')
         tripMapper.insertDefaultTripReview(tripRequest.getTripId());
+        // TRIP_ITINERARY 테이블에 기본 일정 행 삽입 (ITINERARY_DATE는 startDate)
+        tripMapper.insertDefaultItinerary(tripRequest.getTripId(), tripRequest.getStartDate());
     }
 
     public List<TripResponseDto> getAllTrips() {
@@ -49,14 +51,9 @@ public class TripService {
     
     @Transactional
     public void deleteTrip(int tripId) {
-        // 필요하다면 TRIP_REVIEW 등 다른 테이블 먼저 삭제
-        // tripMapper.deleteTripReview(tripId);
-
-        // TRIP 테이블 삭제
         int rows = tripMapper.deleteTrip(tripId);
         if (rows == 0) {
             throw new RuntimeException("해당 여행을 찾을 수 없어 삭제할 수 없습니다.");
         }
     }
-
 }
