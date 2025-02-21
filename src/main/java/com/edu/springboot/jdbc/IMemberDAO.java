@@ -3,6 +3,7 @@ package com.edu.springboot.jdbc;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface IMemberDAO {
@@ -25,5 +26,8 @@ public interface IMemberDAO {
     // ✅ 비밀번호 찾기 - 인증번호 조회
     String getVerificationCode(@Param("email") String email);
     
+    @Select("SELECT * FROM USERS WHERE USER_ID = #{userId}")
+    MemberDTO selectById(@Param("userId") Long userId);
+
     
 }

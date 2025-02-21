@@ -10,9 +10,10 @@
 <body>
 	<h2>Travel Maker 프로젝트</h2>
 	<ul>
-		<li><a href="/">루트</a></li>
-		<li><a href="/boards.do">게시판관련 페이지</a></li>
-	</ul>
+        <li><a href="/">루트</a></li>
+        <li><a href="/boards.do">게시판 관련 페이지</a></li>
+        <li><a href="/friends/view?id=1">친구 목록 보기</a></li>
+    </ul>
 =======
 <title>Insert title here</title>
 </head>
