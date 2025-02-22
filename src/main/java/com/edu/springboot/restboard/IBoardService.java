@@ -13,7 +13,7 @@ public interface IBoardService {
 	// 게시물 가져오기
 	public ArrayList<BoardDTO> list(ParameterDTO parameterDTO);
 	// 게시판의 총 게시물 갯수
-	public int boardTotalLength(BoardDTO boardDTO);
+	public int boardTotalLength(ParameterDTO parameterDTO);
 	// 게시물 검색하기
 	public ArrayList<BoardDTO> search(ParameterDTO parameterDTO);
 	// 게시물 내용보기

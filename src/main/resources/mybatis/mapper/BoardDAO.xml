@@ -20,8 +20,9 @@
 	</select>
 	
 	<select id="boardTotalLength"
-		parameterType="com.edu.springboot.restboard.ParameterDTO">
-		SELECT COUNT(*) FROM boards * WHERE board_cate = #{board_cate}	
+		parameterType="com.edu.springboot.restboard.ParameterDTO"
+		resultType="int">
+		SELECT COUNT(*) FROM boards WHERE board_cate = #{board_cate}	
 	</select>
 	
 	<select id="getPopularReviews" 

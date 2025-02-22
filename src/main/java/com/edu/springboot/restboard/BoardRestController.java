@@ -54,16 +54,15 @@ public class BoardRestController {
 	}
 	
 	@GetMapping("/boardTotalLength.do")
-	public List<BoardDTO> boardTotalLength(HttpServletRequest req, 
-			ParameterDTO parameterDTO) {
-		
-		// 게시판 카테고리 설정
-		parameterDTO.setBoard_cate(parameterDTO.getBoard_cate());
-		
-		// DAO의 메서드 호출
-		List<BoardDTO> boardLen = dao.list(parameterDTO);
-		
-		return boardLen;
+	public Map<String, Integer> boardTotalLength(ParameterDTO parameterDTO) {
+		// 전체 게시글 개수 가져오기
+	    int totalLength = dao.boardTotalLength(parameterDTO);
+
+	    // 결과를 JSON 형태로 반환
+	    Map<String, Integer> map = new HashMap<>();
+	    map.put("totalCount", totalLength);
+	    
+	    return map;
 	}
 	
 	@GetMapping("/restBoardSearch.do")

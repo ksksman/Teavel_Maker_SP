@@ -5,6 +5,7 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	
 <mapper namespace="com.edu.springboot.restboard.IBoardService">
+
 	<select id="list"
 		parameterType="com.edu.springboot.restboard.ParameterDTO"
 		resultType="com.edu.springboot.restboard.BoardDTO">
@@ -18,13 +19,19 @@
 			WHERE rNum BETWEEN #{start} AND #{end}	
 	</select>
 	
+	<select id="boardTotalLength"
+		parameterType="com.edu.springboot.restboard.ParameterDTO"
+		resultType="int">
+		SELECT COUNT(*) FROM boards WHERE board_cate = #{board_cate}	
+	</select>
+	
 	<select id="getPopularReviews" 
 		parameterType="com.edu.springboot.restboard.ParameterDTO" 
 		resultType="com.edu.springboot.restboard.BoardDTO">
 	    SELECT * FROM (
 	        SELECT Tb.*, rownum rNum FROM (
 	            SELECT * FROM boards 
-	            WHERE board_cate = #{board_cate} AND like_count >= 50
+	            WHERE board_cate = #{board_cate} AND like_count >= 10
 	            ORDER BY board_idx DESC
 	        ) Tb
 	    ) WHERE rNum BETWEEN #{start} AND #{end}
@@ -61,6 +68,7 @@
 		resultType="com.edu.springboot.restboard.BoardDTO">
 		SELECT * FROM boards WHERE board_idx=#{board_idx}
 	</select>
+	
 	<insert id="write"
 		parameterType="com.edu.springboot.restboard.BoardDTO">
 		INSERT INTO boards
@@ -80,6 +88,7 @@
 		parameterType="com.edu.springboot.restboard.ParameterDTO">
         UPDATE boards SET view_count = view_count + 1 WHERE board_idx = #{board_idx}
     </update>
+    
 	<!-- 리뷰 게시물 수정 -->
     <update id="updateBoard" parameterType="com.edu.springboot.restboard.BoardDTO">
         UPDATE boards SET 
@@ -91,8 +100,7 @@
     <delete id="deleteBoard" parameterType="String">
         DELETE FROM boards WHERE board_idx = #{board_idx}
     </delete>
-    
-    
+        
     <select id="getTopLikedReviews" 
     	resultType="com.edu.springboot.restboard.BoardDTO">
 	    SELECT * FROM (
