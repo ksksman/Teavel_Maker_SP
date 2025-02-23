@@ -12,6 +12,8 @@ public interface IBoardService {
 	public int totalCount();
 	// 게시물 가져오기
 	public ArrayList<BoardDTO> list(ParameterDTO parameterDTO);
+	// 게시판의 총 게시물 갯수
+	public int boardTotalLength(ParameterDTO parameterDTO);
 	// 게시물 검색하기
 	public ArrayList<BoardDTO> search(ParameterDTO parameterDTO);
 	// 게시물 내용보기
@@ -28,4 +30,7 @@ public interface IBoardService {
     public int increaseViewCount(BoardDTO boardDTO);
     // 전체글 인기글 보기
     public ArrayList<BoardDTO> getPopularReviews(ParameterDTO parameterDTO);
+    // 가장 좋아요(like_count)가 많은 3개 게시물 조회
+    public ArrayList<BoardDTO> getTopLikedReviews();
+
 }

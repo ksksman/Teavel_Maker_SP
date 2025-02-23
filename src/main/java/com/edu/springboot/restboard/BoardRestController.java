@@ -1,11 +1,14 @@
 package com.edu.springboot.restboard;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -35,6 +39,7 @@ public class BoardRestController {
 		// 게시물의 구간 계산
 		int start = (pageNum-1) * pageSize + 1;
 		int end = pageNum * pageSize;
+		
 		// DTO에 계산 결과 저장
 		parameterDTO.setStart(start);
 		parameterDTO.setEnd(end);
@@ -45,8 +50,19 @@ public class BoardRestController {
 		// DAO의 메서드 호출
 		List<BoardDTO> boardList = dao.list(parameterDTO);
 		
-		// List를 반환하므로 JSON 배열로 화면에 출력된다.
 		return boardList;
+	}
+	
+	@GetMapping("/boardTotalLength.do")
+	public Map<String, Integer> boardTotalLength(ParameterDTO parameterDTO) {
+		// 전체 게시글 개수 가져오기
+	    int totalLength = dao.boardTotalLength(parameterDTO);
+
+	    // 결과를 JSON 형태로 반환
+	    Map<String, Integer> map = new HashMap<>();
+	    map.put("totalCount", totalLength);
+	    
+	    return map;
 	}
 	
 	@GetMapping("/restBoardSearch.do")
@@ -133,6 +149,13 @@ public class BoardRestController {
 
         return dao.getPopularReviews(parameterDTO);
     }
+    
+    // ALHomePage.jsx 에서 인기 Top3 후기글 요청하는 API
+    @GetMapping("/topLikedReviews.do")
+    public List<BoardDTO> getTopLikedReviews() {
+        return dao.getTopLikedReviews();
+    }
+    
 }
 
 
