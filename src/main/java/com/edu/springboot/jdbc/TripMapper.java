@@ -54,8 +54,8 @@ public interface TripMapper {
 
     // TRIP_ITINERARY 테이블에 기본 행 삽입
     // ITINERARY_DATE는 여행 시작일, PLACE_NAME은 빈 문자열로 처리 (또는 '미정' 등으로 처리)
-    @Insert("INSERT INTO TRIP_ITINERARY (ITINERARY_ID, TRIP_ID, ITINERARY_DATE, PLACE_NAME, SEQ, CREATED_DATE, CONTENT_ID) " +
-            "VALUES (TRIP_ITINERARY_SEQ.NEXTVAL, #{tripId}, TO_DATE(#{startDate}, 'YYYY-MM-DD'), '미정', 1, CURRENT_TIMESTAMP, NULL)")
+    @Insert("INSERT INTO TRIP_ITINERARY (ITINERARY_ID, TRIP_ID, ITINERARY_DATE, SEQ, CREATED_DATE, CONTENT_ID) " +
+            "VALUES (TRIP_ITINERARY_SEQ.NEXTVAL, #{tripId}, TO_DATE(#{startDate}, 'YYYY-MM-DD'), 1, CURRENT_TIMESTAMP, NULL)")
     int insertDefaultItinerary(@Param("tripId") int tripId, @Param("startDate") String startDate);
 
     @Update("UPDATE TRIP_REVIEW SET IMAGE = #{image} WHERE TRIP_ID = #{tripId}")
