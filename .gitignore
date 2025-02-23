@@ -22,3 +22,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+.gradle/
+bin/
