@@ -3,6 +3,7 @@ plugins {
     id 'war'
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'eclipse'
 }
 
 group = 'com.edu'
@@ -29,49 +30,54 @@ eclipse.wtp.facet {
 }
 
 dependencies {
+    // 기본 웹, JDBC, JPA, MyBatis 등
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    
+    // Lombok
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
     annotationProcessor 'org.projectlombok:lombok'
+    
+    // Oracle JDBC
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+    
+    // Tomcat (provided scope)
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+    
+    // 테스트 관련
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    // ✅ JSP 관련 설정
+    // JSP 관련 설정
     implementation 'jakarta.servlet:jakarta.servlet-api'
     implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 
-    // ✅ SMTP 관련 라이브러리 추가
+    // SMTP 관련 라이브러리 추가
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
 
-  	//sns로그인 관련
-    implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient 사용
-    implementation 'com.fasterxml.jackson.core:jackson-databind' // JSON 파싱
+    // SNS 로그인 관련 (WebClient 및 JSON 파싱)
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-    // ✅ Spring Boot Web (서버 API용)
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-      
-    // ✅ JWT 라이브러리 추가
+    // JWT 라이브러리 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 처리용
-    
-    
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    
-   //  XML 파싱 (한국관광공사 API 응답 처리)
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // XML 파싱 (한국관광공사 API 응답 처리)
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
 
+    // 웹소켓 (Spring Messaging 관련 클래스는 spring-boot-starter-websocket에 포함됨)
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType(JavaCompile) {
     options.compilerArgs << "-parameters"
 }
 

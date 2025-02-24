@@ -139,4 +139,14 @@ public class UserService implements IMemberService {
         System.out.println("🔹 updatePassword 실행 결과: " + result);
         return result;
     }
+    
+    public MemberDTO getUserById(Long userId) {
+        MemberDTO user = memberDAO.selectById(userId);
+        if (user == null) {
+            throw new RuntimeException("❌ 해당 ID의 사용자가 존재하지 않습니다.");
+        }
+        return user;
+    }
+
+
 }
