@@ -49,13 +49,14 @@ dependencies {
     // ✅ SMTP 관련 라이브러리 추가
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'com.sun.mail:jakarta.mail:2.0.1'
-     
-     //sns로그인 관련
-     implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient 사용
+
+  	//sns로그인 관련
+    implementation 'org.springframework.boot:spring-boot-starter-webflux' // WebClient 사용
     implementation 'com.fasterxml.jackson.core:jackson-databind' // JSON 파싱
 
     // ✅ Spring Boot Web (서버 API용)
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
       
     // ✅ JWT 라이브러리 추가
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
@@ -67,6 +68,7 @@ dependencies {
     
    //  XML 파싱 (한국관광공사 API 응답 처리)
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
+
 }
 
 tasks.withType(JavaCompile).configureEach {

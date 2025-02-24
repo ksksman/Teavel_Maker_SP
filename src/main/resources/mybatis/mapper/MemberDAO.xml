@@ -18,11 +18,12 @@
 	</select>
 
 
-    <!-- 회원 등록 -->
+    <!-- 회원 등록 (recommended_friend 삭제됨) -->
     <insert id="insert" parameterType="com.edu.springboot.jdbc.MemberDTO">
-       INSERT INTO USERS (EMAIL, PASSWORD, NICKNAME, BIRTHDATE, GENDER, PHONE_NUMBER, MARKETING_CONSENT, ACCOUNT_CREATED_AT, UPDATED_AT)
+
+        INSERT INTO USERS (EMAIL, PASSWORD, NICKNAME, BIRTHDATE, GENDER, PHONE_NUMBER, MARKETING_CONSENT, ACCOUNT_CREATED_AT, UPDATED_AT)
         VALUES (#{email}, #{password}, #{nickname}, #{birthdate}, #{gender}, #{phoneNumber}, #{marketingConsent}, CURRENT_TIMESTAMP, SYSDATE)
-     </insert>
+    </insert>
 
     <!-- 회원 정보 업데이트 -->
     <update id="update" parameterType="com.edu.springboot.jdbc.MemberDTO">
@@ -61,6 +62,8 @@
 	    FROM USERS 
 	    WHERE email = #{email}
 	</select>
+
+
 
 
 </mapper>
