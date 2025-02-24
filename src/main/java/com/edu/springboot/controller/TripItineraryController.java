@@ -46,6 +46,28 @@ public class TripItineraryController {
         itineraryService.updateItineraryOrder(itineraryId, seq);
     }
     
+   
+    // ✅ 드래그앤드롭으로 일정 순서 변경
+    @PutMapping("/updateOrder")
+    public ResponseEntity<?> updateItineraryOrder(@RequestBody List<TripItineraryDTO> updatedItineraryList) {
+        try {
+            System.out.println("🔄 순서 변경 요청 도착! 데이터 확인:");
+            for (TripItineraryDTO itinerary : updatedItineraryList) {
+                System.out.println("📌 ID: " + itinerary.getItineraryId() + ", SEQ: " + itinerary.getSeq() + ", tripId: " + itinerary.getTripId());
+                if (itinerary.getItineraryId() == null) {
+                    throw new IllegalArgumentException("❌ 오류: itineraryId가 null입니다.");
+                }
+            }
+
+            itineraryService.updateItineraryOrderBatch(updatedItineraryList);
+            return ResponseEntity.ok("✅ 일정 순서가 변경되었습니다.");
+        } catch (Exception e) {
+            System.err.println("❌ 순서 변경 실패: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("❌ 순서 변경 실패: " + e.getMessage());
+        }
+    }
+
+
     //해당 날짜의 관광지 삭제
     @DeleteMapping("/delete-by-date")
     public ResponseEntity<?> deleteItineraryByDate(@RequestBody Map<String, String> requestBody) {
@@ -63,6 +85,8 @@ public class TripItineraryController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("삭제 실패: " + e.getMessage());
         }
     }
+    
+    
 
 
 }
