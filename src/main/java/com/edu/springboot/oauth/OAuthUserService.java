@@ -32,9 +32,12 @@ public class OAuthUserService {
         if (userId == null) {
             System.out.println("🚀 새로운 회원 생성 중... (Email: " + email + ")");
 
+            // ✅ 닉네임 중복 검사 후 변경
+            String finalNickname = generateUniqueNickname(nickname);
+
             MemberDTO newUser = new MemberDTO();
             newUser.setEmail(email);
-            newUser.setNickname(nickname != null ? nickname : "Unknown");
+            newUser.setNickname(finalNickname);
             newUser.setPassword("OAUTH_USER");
             newUser.setBirthdate(null);
             newUser.setGender("M");
@@ -49,14 +52,18 @@ public class OAuthUserService {
                 }
                 System.out.println("✅ 새로운 회원 저장 완료 (UserID: " + userId + ")");
             } catch (Exception e) {
-                throw new RuntimeException("🚨 회원 저장 중 예외 발생: " + e.getMessage());
+                throw new RuntimeException("🚨 USERS 테이블 저장 실패: " + e.getMessage());
             }
         }
 
-        // 4️⃣ USER_OAUTH 테이블에 OAuth 정보 저장 (user_id를 정확하게 넣음)
+        // 4️⃣ USER_OAUTH 테이블에 OAuth 정보 저장
         OAuthUserDTO newOAuthUser = new OAuthUserDTO(userId, providerName, providerUserId, nickname);
-        oauthUserDAO.saveOAuthUser(newOAuthUser);
-        System.out.println("✅ OAuth 계정 저장 완료: " + newOAuthUser);
+        try {
+            oauthUserDAO.saveOAuthUser(newOAuthUser);
+            System.out.println("✅ USER_OAUTH 테이블 저장 완료: " + newOAuthUser);
+        } catch (Exception e) {
+            throw new RuntimeException("🚨 USER_OAUTH 저장 실패: " + e.getMessage());
+        }
 
         // ✅ 저장 후 최종 데이터 조회 확인
         OAuthUserDTO savedUser = oauthUserDAO.findByProviderAndProviderUserId(providerName, providerUserId);
@@ -69,4 +76,21 @@ public class OAuthUserService {
         return savedUser;
     }
 
+    /**
+     * ✅ 닉네임 중복 검사 후, 중복되면 숫자 붙이기
+     */
+    private String generateUniqueNickname(String baseNickname) {
+        String newNickname = baseNickname;
+        int count = 1;
+
+        // 닉네임이 이미 존재하면 뒤에 숫자를 붙임
+        while (oauthUserDAO.findUserIdByNickname(newNickname) != null) {
+            newNickname = baseNickname + count;
+            count++;
+        }
+
+        System.out.println("✅ 생성된 최종 닉네임: " + newNickname);
+        return newNickname;
+    }
 }
+
