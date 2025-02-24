@@ -99,21 +99,22 @@ public class BoardRestController {
 	
 	@PostMapping("/restBoardWrite.do")
 	public Map<String, Integer> restBoardWrite(@RequestBody Map<String, Object> requestData) {
-		
-		BoardDTO boardDTO = new BoardDTO();
+	    
+	    BoardDTO boardDTO = new BoardDTO();
 	    boardDTO.setTitle((String) requestData.get("title"));
 	    boardDTO.setContent((String) requestData.get("content"));
 	    boardDTO.setNickname((String) requestData.get("nickname"));
 	    boardDTO.setBoard_cate((Integer) requestData.get("board_cate"));
 
-	    // ✅ tripId 가져오기
+	    // ✅ tripId 가져오기 (Qna 게시판은 tripId 없음)
 	    Integer tripId = (Integer) requestData.get("tripId");
 
 	    if (tripId != null) {
+	        // ✅ 후기 게시판에서 TRIP_REVIEW의 IMAGE 가져오기
 	        String image = tripMapper.getTripById(tripId).getImage();
-	        boardDTO.setAttached_file(image);  // TRIP_REVIEW의 IMAGE 컬럼 값 저장
+	        boardDTO.setAttached_file(image != null ? image : "");  // null 방지 (빈 문자열로 저장)
 	    } else {
-	        boardDTO.setAttached_file(null);
+	        boardDTO.setAttached_file("");  // Qna 게시판에서는 빈 문자열 저장
 	    }
 
 	    int result = dao.write(boardDTO);
@@ -122,6 +123,7 @@ public class BoardRestController {
 	    response.put("result", result);
 	    return response;
 	}
+
 
 	@PatchMapping("/increaseLikeCount.do")
     public Map<String, Integer> increaseLikeCount(BoardDTO boardDTO) {
