@@ -1,5 +1,6 @@
 package com.edu.springboot.service;
 
+import com.edu.springboot.dto.ItineraryDto;
 import com.edu.springboot.dto.TripRequestDto;
 import com.edu.springboot.dto.TripResponseDto;
 import com.edu.springboot.dto.TripReviewDto;
@@ -7,7 +8,10 @@ import com.edu.springboot.jdbc.TripMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class TripService {
@@ -17,11 +21,11 @@ public class TripService {
 
     @Transactional
     public void createTrip(TripRequestDto tripRequest) {
-        // TRIP 테이블에 여행 정보 저장
+        // 1. TRIP 테이블에 여행 정보 저장
         tripMapper.insertTrip(tripRequest);
-        // TRIP_REVIEW 테이블에 기본 리뷰 행 삽입 (후기는 NULL, 상태는 '계획중')
+        // 2. TRIP_REVIEW 테이블에 기본 리뷰 행 삽입 (후기는 NULL, 상태는 '계획중')
         tripMapper.insertDefaultTripReview(tripRequest.getTripId());
-        // TRIP_ITINERARY 테이블에 기본 일정 행 삽입 (ITINERARY_DATE는 startDate)
+        // 3. TRIP_ITINERARY 테이블에 기본 일정 행 삽입 (ITINERARY_DATE는 startDate, PLACE_NAME은 '미정')
         tripMapper.insertDefaultItinerary(tripRequest.getTripId(), tripRequest.getStartDate());
     }
 
@@ -29,8 +33,60 @@ public class TripService {
         return tripMapper.getAllTrips();
     }
 
+    // 날짜 범위 생성 함수
+    private List<String> generateDateRange(String start, String end) {
+        List<String> result = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date startDate = sdf.parse(start);
+            Date endDate = sdf.parse(end);
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(startDate);
+            while (!cal.getTime().after(endDate)) {
+                result.add(sdf.format(cal.getTime()));
+                cal.add(Calendar.DATE, 1);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
     public TripResponseDto getTripById(int tripId) {
-        return tripMapper.getTripById(tripId);
+        // 1) 여행 기본 정보 조회
+        TripResponseDto trip = tripMapper.getTripById(tripId);
+        if (trip == null) {
+            return null;
+        }
+
+        // 2) 일정 목록 조회
+        List<ItineraryDto> itineraryList = tripMapper.getItinerariesByTripId(tripId);
+
+        // 3) 날짜별로 placeName을 그룹화
+        Map<String, List<String>> itineraryMap = new HashMap<>();
+        for (ItineraryDto it : itineraryList) {
+            itineraryMap
+                .computeIfAbsent(it.getItineraryDate(), k -> new ArrayList<>())
+                .add(it.getPlaceName());
+        }
+        trip.setItinerary(itineraryMap);
+
+        // 4) 여행 기간 전체 날짜 범위 생성
+        List<String> fullRange = generateDateRange(trip.getStartDate(), trip.getEndDate());
+
+        // 5) DB에 있는 일정 날짜 목록
+        Set<String> usedDates = itineraryMap.keySet(); // 실제 일정이 있는 날짜들
+
+        // 6) fullRange + usedDates 병합 후 정렬
+        Set<String> mergedSet = new HashSet<>(fullRange);
+        mergedSet.addAll(usedDates);
+        List<String> mergedDates = new ArrayList<>(mergedSet);
+        Collections.sort(mergedDates);
+
+        // 7) TripResponseDto에 일정 날짜 목록 세팅
+        trip.setItineraryDates(mergedDates);
+
+        return trip;
     }
 
     @Transactional
@@ -48,7 +104,7 @@ public class TripService {
     public void updateTripReviewImage(int tripId, String imageUrl) {
         tripMapper.updateTripReviewImage(tripId, imageUrl);
     }
-    
+
     @Transactional
     public void deleteTrip(int tripId) {
         int rows = tripMapper.deleteTrip(tripId);
