@@ -23,7 +23,11 @@ public interface OAuthUserDAO {
     @Select("SELECT user_id FROM USERS WHERE email = #{email}")
     Integer findUserIdByEmail(@Param("email") String email);
 
-    // ✅ USERS 테이블에 SNS 회원 추가 (기본값 적용)
+    // ✅ 닉네임 중복 확인 (닉네임이 존재하면 user_id 반환)
+    @Select("SELECT user_id FROM USERS WHERE nickname = #{nickname}")
+    Integer findUserIdByNickname(@Param("nickname") String nickname);
+
+    // ✅ USERS 테이블에 SNS 회원 추가 (닉네임 중복 방지 적용)
     @Insert("INSERT INTO USERS (email, password, nickname, birthdate, gender, phone_number, marketing_consent, updated_at) " +
             "VALUES (#{email}, 'OAUTH_USER', #{nickname}, TO_DATE('2000-01-01', 'YYYY-MM-DD'), 'M', '000-0000-0000', '0', CURRENT_DATE)")
     @Options(useGeneratedKeys = true, keyProperty = "userId")
@@ -37,6 +41,4 @@ public interface OAuthUserDAO {
     // ✅ USER_OAUTH 테이블 닉네임 업데이트 (닉네임이 변경된 경우)
     @Update("UPDATE USER_OAUTH SET NICKNAME = #{nickname} WHERE PROVIDER_USER_ID = #{providerUserId}")
     void updateNickname(@Param("nickname") String nickname, @Param("providerUserId") String providerUserId);
-
-	void updateNickname(OAuthUserDTO existingUser);
 }

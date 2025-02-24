@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class OAuthLoginController {
+public class KakaoLoginController {
 
     private static final String KAKAO_CLIENT_ID = "389b95d1ffd38f723c94e788919d6b4d";
     private static final String KAKAO_REDIRECT_URI = "http://localhost:8586/auth/kakao/callback";
@@ -121,7 +121,7 @@ public class OAuthLoginController {
     /**
      * 🔹 3️⃣ 로그인된 사용자 세션 확인 API
      */
-    @GetMapping("/me")  // ✅ `/checkSession` 대신 `/me` 사용
+    @GetMapping("/me")  // ✅ /checkSession 대신 /me 사용
     public ResponseEntity<?> getCurrentUser(HttpSession session) {
         OAuthUserDTO user = (OAuthUserDTO) session.getAttribute("loginUser");
 
