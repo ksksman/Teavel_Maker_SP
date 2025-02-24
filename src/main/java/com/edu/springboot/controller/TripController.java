@@ -22,6 +22,7 @@ public class TripController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createTrip(@RequestBody TripRequestDto tripRequest) {
         tripService.createTrip(tripRequest);
+
         return ResponseEntity.ok(Map.of("message", "여행이 저장되었습니다.", "tripId", tripRequest.getTripId()));
     }
 

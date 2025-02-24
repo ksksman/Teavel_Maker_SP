@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.edu.springboot.mapper.MyTripMapper">
+
+		<select id="getTripById" resultType="com.edu.springboot.dto.MyTripDto">
+	    SELECT 
+	        TRIP_ID, 
+	        TRIP_TITLE, 
+	        TO_CHAR(START_DATE, 'YYYY-MM-DD') AS startDate, 
+	        TO_CHAR(END_DATE, 'YYYY-MM-DD') AS endDate, 
+	        USER_ID 
+		    FROM TRIP 
+		    WHERE TRIP_ID = #{tripId}
+		</select>
+
+		<select id="getParticipantsByTripId" resultType="com.edu.springboot.dto.ParticipantDto">
+		    SELECT 
+		        tp.TRIP_ID,  <!-- ✅ tripId 추가 -->
+		        tp.USER_ID, 
+		        u.NICKNAME, 
+		        tp.ROLE 
+		    FROM TRIP_PARTICIPANTS tp
+		    JOIN USERS u ON tp.USER_ID = u.USER_ID
+		    WHERE tp.TRIP_ID = #{tripId}
+		</select>
+
+		
+</mapper>

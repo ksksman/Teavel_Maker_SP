@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.edu.springboot.mapper.TripItineraryMapper">
+
+    <!--  ResultMap: 위도(LAT), 경도(LNG) 포함 -->
+    <resultMap id="TripItineraryMap" type="com.edu.springboot.dto.TripItineraryDTO">
+        <id property="itineraryId" column="ITINERARY_ID"/>
+        <result property="tripId" column="TRIP_ID"/>
+        <result property="itineraryDate" column="ITINERARY_DATE"/>
+        <result property="placeName" column="PLACE_NAME"/>
+        <result property="seq" column="SEQ"/>
+        <result property="contentId" column="CONTENT_ID"/>
+        <result property="lat" column="LAT"/>  <!--  위도 -->
+        <result property="lng" column="LNG"/>  <!--  경도 -->
+    </resultMap>
+
+    <!--  1. 특정 여행의 일정 조회 (위도, 경도 포함) -->
+    <select id="getItineraryByTripId" resultMap="TripItineraryMap">
+        SELECT ITINERARY_ID, TRIP_ID, ITINERARY_DATE, PLACE_NAME, SEQ, CONTENT_ID, LAT, LNG 
+        FROM TRIP_ITINERARY 
+        WHERE TRIP_ID = #{tripId} 
+        ORDER BY ITINERARY_DATE, SEQ
+    </select>
+
+    <!--  2. 새로운 일정 추가 (위도, 경도 포함) -->
+    <insert id="addItinerary">
+        INSERT INTO TRIP_ITINERARY 
+        (ITINERARY_ID, TRIP_ID, ITINERARY_DATE, PLACE_NAME, SEQ, CONTENT_ID, LAT, LNG, CREATED_DATE)
+        VALUES 
+        (TRIP_ITINERARY_SEQ.NEXTVAL, #{tripId}, #{itineraryDate}, #{placeName}, #{seq}, #{contentId}, #{lat}, #{lng}, CURRENT_TIMESTAMP)
+    </insert>
+
+    <!--  3. 일정 중복 체크 (위도, 경도 포함 & NULL 비교 지원) -->
+	
+<!-- 🚀 중복 체크 SQL 수정 -->
+	<select id="checkDuplicateItinerary" resultType="int">
+	    SELECT COUNT(*)
+	    FROM TRIP_ITINERARY
+	    WHERE TRIP_ID = #{tripId} 
+	    AND ITINERARY_DATE = #{itineraryDate}
+	    AND PLACE_NAME = #{placeName}
+	    AND (
+	        (ROUND(LAT, 6) = ROUND(#{lat}, 6) AND ROUND(LNG, 6) = ROUND(#{lng}, 6)) 
+	        OR (LAT IS NULL AND #{lat} IS NULL AND LNG IS NULL AND #{lng} IS NULL)
+	    )
+	</select>
+	
+	<!-- ✅ 특정 날짜(itineraryDate)의 다음 SEQ 값 조회 -->
+	<select id="getNextSeqForDate" resultType="int">
+	    SELECT COALESCE(MAX(SEQ), 0) + 1
+	    FROM TRIP_ITINERARY
+	    WHERE TRIP_ID = #{tripId} 
+	    AND ITINERARY_DATE = #{itineraryDate}
+	</select>
+		
+
+
+    <!-- 4. 일정 삭제 -->
+    <delete id="deleteItinerary">
+        DELETE FROM TRIP_ITINERARY WHERE ITINERARY_ID = #{itineraryId}
+    </delete>
+
+	<update id="batchUpdateItineraryOrder">
+    <foreach collection="itineraryList" item="itinerary" separator=";">
+        UPDATE TRIP_ITINERARY 
+        SET SEQ = #{itinerary.seq} 
+        WHERE ITINERARY_ID = #{itinerary.itineraryId}
+    </foreach>
+</update>
+	
+
+    <!--  6. 일정 순서 변경 -->
+    <update id="updateItineraryOrder">
+        UPDATE TRIP_ITINERARY 
+        SET SEQ = #{seq} 
+        WHERE ITINERARY_ID = #{itineraryId}
+    </update>
+
+</mapper>
