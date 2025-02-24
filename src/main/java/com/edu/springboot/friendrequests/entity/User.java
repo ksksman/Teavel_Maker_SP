@@ -35,4 +35,8 @@ public class User {
 
     @Column(name = "birthdate") // ✅ LocalDate로 변경 (DB DATE와 매핑)
     private LocalDate birthdate;
+    
+    public Long getUserId() {
+        return this.userId;
+    }
 }

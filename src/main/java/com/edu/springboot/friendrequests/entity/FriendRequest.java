@@ -1,39 +1,45 @@
 package com.edu.springboot.friendrequests.entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "friendrequests") // ✅ 테이블명 소문자로 통일
+@Table(name = "friendrequests") // ✅ 테이블명과 일치하도록 변경
 public class FriendRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "request_id") // ✅ 컬럼명을 request_id로 변경
-    private Long requestId;
+    @Column(name = "request_id") // ✅ 테이블 컬럼명과 맞추기
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "requester_id", nullable = false) // ✅ 컬럼명 user_id 사용
+    @JoinColumn(name = "requester_id", nullable = false) // ✅ 테이블의 컬럼명과 매핑
     private User requester;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false) // ✅ 컬럼명 user_id 사용
+    @JoinColumn(name = "receiver_id", nullable = false)
     private User receiver;
 
     @Column(nullable = false)
-    private String status; // PENDING, ACCEPTED, REJECTED
+    private String status = "PENDING"; // ✅ 기본 상태 설정
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        this.createdAt = LocalDateTime.now(); // ✅ 생성 시간 자동 설정
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    // ✅ `getUserId()` 메서드 사용
+    public Long getRequesterUserId() {
+        return requester.getUserId();
+    }
+
+    public Long getReceiverUserId() {
+        return receiver.getUserId();
     }
 }

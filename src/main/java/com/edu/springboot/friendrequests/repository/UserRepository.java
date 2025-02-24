@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     // 📌 사용자 ID로 조회 (명확성을 위해 userId로 변경)
     Optional<User> findByUserId(Long userId);
+    
+    Optional<User> findByNickname(String nickname);
 }

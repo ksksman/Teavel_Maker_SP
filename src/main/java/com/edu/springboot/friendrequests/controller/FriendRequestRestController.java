@@ -25,24 +25,26 @@ public class FriendRequestRestController {
     @PostMapping("/request")
     public ResponseEntity<Map<String, String>> sendFriendRequest(@RequestBody Map<String, Object> requestData) {
         Long requesterId = Long.valueOf(requestData.get("requesterId").toString());
-        Long receiverId = Long.valueOf(requestData.get("receiverId").toString());
+        String receiverNickname = requestData.get("receiverNickname").toString();
 
-        System.out.println("🔥 요청자 ID: " + requesterId + ", 수신자 ID: " + receiverId); // ✅ 디버깅 로그 추가
+        System.out.println("🔥 요청자 ID: " + requesterId + ", 수신자 닉네임: " + receiverNickname);
 
         Map<String, String> response = new HashMap<>();
-        if (requesterId == null || receiverId == null) {
-            response.put("message", "❌ 요청자 또는 수신자 ID가 없습니다.");
+        if (requesterId == null || receiverNickname == null || receiverNickname.trim().isEmpty()) {
+            response.put("message", "❌ 요청자 ID 또는 닉네임이 없습니다.");
             return ResponseEntity.badRequest().body(response);
         }
 
         try {
-            response.put("message", friendRequestService.sendFriendRequest(requesterId, receiverId));
+            response.put("message", friendRequestService.sendFriendRequest(requesterId, receiverNickname));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             response.put("message", "❌ 친구 요청 중 오류 발생: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
     }
+
+
 
 
     // 📌 받은 친구 요청 목록 조회 (GET /api/friends/requests?userId=1)

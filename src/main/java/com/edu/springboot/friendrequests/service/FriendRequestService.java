@@ -21,32 +21,44 @@ public class FriendRequestService {
     private final UserRepository userRepository;
     
 
-    // 📌 친구 요청 보내기
+    // ✅ 친구 요청 보내기
     @Transactional
-    public String sendFriendRequest(Long requesterUserId, Long receiverUserId) {
-        Optional<User> requesterOpt = userRepository.findByUserId(requesterUserId);
-        Optional<User> receiverOpt = userRepository.findByUserId(receiverUserId);
+    public String sendFriendRequest(Long requesterId, String receiverNickname) {
+        Optional<User> requesterOpt = userRepository.findById(requesterId);
+        Optional<User> receiverOpt = userRepository.findByNickname(receiverNickname);
 
         if (requesterOpt.isEmpty() || receiverOpt.isEmpty()) {
-            return "❌ 유효하지 않은 사용자 ID";
+            return "❌ 유효하지 않은 사용자 ID 또는 닉네임입니다.";
         }
 
+        User requester = requesterOpt.get();
+        User receiver = receiverOpt.get();
+
+        // ✅ 중복 요청 방지
+        boolean alreadyRequested = friendRequestRepository.existsByRequester_UserIdAndReceiver_UserId(
+        	    requester.getUserId(), receiver.getUserId()
+        	);
+        if (alreadyRequested) {
+            return "⚠️ 이미 친구 요청을 보냈습니다.";
+        }
+
+        // ✅ 친구 요청 저장
         FriendRequest friendRequest = new FriendRequest();
-        friendRequest.setRequester(requesterOpt.get());
-        friendRequest.setReceiver(receiverOpt.get());
+        friendRequest.setRequester(requester);
+        friendRequest.setReceiver(receiver);
         friendRequest.setStatus("PENDING");
 
         friendRequestRepository.save(friendRequest);
         return "✅ 친구 요청을 보냈습니다.";
     }
 
-    // 📌 받은 친구 요청 목록 조회
     public List<FriendRequestDto> getReceivedRequests(Long userId) {
         return friendRequestRepository.findByReceiver_UserIdAndStatus(userId, "PENDING")
-                .stream()
-                .map(FriendRequestDto::new)
-                .collect(Collectors.toList());
+            .stream()
+            .map(FriendRequestDto::new)
+            .collect(Collectors.toList());
     }
+
 
     // 📌 친구 요청 수락
     @Transactional
