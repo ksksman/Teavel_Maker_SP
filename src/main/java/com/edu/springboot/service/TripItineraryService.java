@@ -96,4 +96,24 @@ public class TripItineraryService {
     public void updateItineraryOrder(Long itineraryId, Integer seq) {
         itineraryMapper.updateItineraryOrder(itineraryId, seq);
     }
+ //  일정 순서 일괄 변경 (드래그앤드롭 적용)
+    @Transactional
+    public void updateItineraryOrderBatch(List<TripItineraryDTO> updatedItineraryList) {
+        try {
+            for (TripItineraryDTO itinerary : updatedItineraryList) {
+                if (itinerary.getItineraryId() == null) {
+                    throw new IllegalArgumentException("❌ 오류: itineraryId가 null입니다.");
+                }
+                System.out.println("📌 업데이트할 일정: ID=" + itinerary.getItineraryId() + ", SEQ=" + itinerary.getSeq());
+                itineraryMapper.updateItineraryOrder(itinerary.getItineraryId(), itinerary.getSeq());
+            }
+            System.out.println("✅ 일정 순서 변경 완료!");
+        } catch (Exception e) {
+            System.err.println("❌ 일정 순서 업데이트 오류: " + e.getMessage());
+            throw new RuntimeException("🚨 일정 순서 업데이트 중 오류 발생: " + e.getMessage());
+        }
+    }
+
+
+
 }
