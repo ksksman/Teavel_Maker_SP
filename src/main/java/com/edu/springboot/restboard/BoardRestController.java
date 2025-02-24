@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.edu.springboot.jdbc.TripMapper;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -92,14 +94,33 @@ public class BoardRestController {
 		return boardDTO;
 	}
 	
+	@Autowired
+	TripMapper tripMapper;
+	
 	@PostMapping("/restBoardWrite.do")
-	public Map<String, Integer> restBoardWrite(@RequestBody BoardDTO boardDTO) {
-			    		
-		int result = dao.write(boardDTO);
-					
-		Map<String, Integer> map = new HashMap<>();
-		map.put("result", result);
-		return map;
+	public Map<String, Integer> restBoardWrite(@RequestBody Map<String, Object> requestData) {
+		
+		BoardDTO boardDTO = new BoardDTO();
+	    boardDTO.setTitle((String) requestData.get("title"));
+	    boardDTO.setContent((String) requestData.get("content"));
+	    boardDTO.setNickname((String) requestData.get("nickname"));
+	    boardDTO.setBoard_cate((Integer) requestData.get("board_cate"));
+
+	    // ✅ tripId 가져오기
+	    Integer tripId = (Integer) requestData.get("tripId");
+
+	    if (tripId != null) {
+	        String image = tripMapper.getTripById(tripId).getImage();
+	        boardDTO.setAttached_file(image);  // TRIP_REVIEW의 IMAGE 컬럼 값 저장
+	    } else {
+	        boardDTO.setAttached_file(null);
+	    }
+
+	    int result = dao.write(boardDTO);
+
+	    Map<String, Integer> response = new HashMap<>();
+	    response.put("result", result);
+	    return response;
 	}
 
 	@PatchMapping("/increaseLikeCount.do")
