@@ -114,20 +114,47 @@ public class TripService {
     }
     
     public TripResponseDto getTripWithItinerary(int tripId) {
+    	// 1) 여행 기본 정보 조회
         TripResponseDto trip = tripMapper.getTripById(tripId);
         if (trip == null) {
-            throw new RuntimeException("해당 tripId의 여행 정보를 찾을 수 없습니다: " + tripId);
+            return null;
         }
 
-        List<ItineraryDto> itineraryList = tripMapper.getItineraryByTripId(tripId);
+        // 2) 일정 목록 조회
+        List<ItineraryDto> itineraryList = tripMapper.getItinerariesByTripId(tripId);
+        
+        // ✅ 일정 데이터가 없으면 빈 리스트 할당
+        if (itineraryList == null) {
+            itineraryList = new ArrayList<>();
+        }
 
+        // 3) 날짜별로 placeName을 그룹화
         Map<String, List<String>> itineraryMap = new HashMap<>();
         for (ItineraryDto it : itineraryList) {
-            itineraryMap
-                .computeIfAbsent(it.getItineraryDate(), k -> new ArrayList<>())
-                .add(it.getPlaceName());
+            // ✅ null 체크 후 처리
+            if (it != null && it.getItineraryDate() != null) {
+                itineraryMap
+                    .computeIfAbsent(it.getItineraryDate(), k -> new ArrayList<>())
+                    .add(it.getPlaceName() != null ? it.getPlaceName() : "미정");
+            }
         }
         trip.setItinerary(itineraryMap);
+
+        // 4) 여행 기간 전체 날짜 범위 생성
+        List<String> fullRange = generateDateRange(trip.getStartDate(), trip.getEndDate());
+
+        // 5) DB에 있는 일정 날짜 목록
+        Set<String> usedDates = itineraryMap.keySet(); // 실제 일정이 있는 날짜들
+
+        // 6) fullRange + usedDates 병합 후 정렬
+        Set<String> mergedSet = new HashSet<>(fullRange);
+        mergedSet.addAll(usedDates);
+        List<String> mergedDates = new ArrayList<>(mergedSet);
+        Collections.sort(mergedDates);
+
+        // 7) TripResponseDto에 일정 날짜 목록 세팅
+        trip.setItineraryDates(mergedDates);
+
         return trip;
     }
 
