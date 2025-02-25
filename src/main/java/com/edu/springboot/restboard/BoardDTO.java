@@ -15,5 +15,6 @@ public class BoardDTO {
 	private LocalDate post_date;
 	private String view_count;
 	private String like_count;
-	private byte[] attached_file;
+	private String attached_file;
+	private Integer tripId;
 }

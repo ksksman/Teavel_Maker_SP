@@ -112,4 +112,23 @@ public class TripService {
             throw new RuntimeException("해당 여행을 찾을 수 없어 삭제할 수 없습니다.");
         }
     }
+    
+    public TripResponseDto getTripWithItinerary(int tripId) {
+        TripResponseDto trip = tripMapper.getTripById(tripId);
+        if (trip == null) {
+            throw new RuntimeException("해당 tripId의 여행 정보를 찾을 수 없습니다: " + tripId);
+        }
+
+        List<ItineraryDto> itineraryList = tripMapper.getItineraryByTripId(tripId);
+
+        Map<String, List<String>> itineraryMap = new HashMap<>();
+        for (ItineraryDto it : itineraryList) {
+            itineraryMap
+                .computeIfAbsent(it.getItineraryDate(), k -> new ArrayList<>())
+                .add(it.getPlaceName());
+        }
+        trip.setItinerary(itineraryMap);
+        return trip;
+    }
+
 }

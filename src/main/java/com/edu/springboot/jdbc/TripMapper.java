@@ -69,4 +69,9 @@ public interface TripMapper {
 
     @Delete("DELETE FROM TRIP WHERE TRIP_ID = #{tripId}")
     int deleteTrip(@Param("tripId") int tripId);
+    
+    @Select("SELECT ITINERARY_DATE, PLACE_NAME " +
+            "FROM TRIP_ITINERARY WHERE TRIP_ID = #{tripId} ORDER BY ITINERARY_DATE, SEQ")
+    List<ItineraryDto> getItineraryByTripId(@Param("tripId") int tripId);
+
 }

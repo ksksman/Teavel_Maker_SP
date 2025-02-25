@@ -64,4 +64,12 @@ public class TripController {
         tripService.deleteTrip(tripId);
         return ResponseEntity.ok("여행이 삭제되었습니다.");
     }
+    
+    @GetMapping("/tripWithItinerary/{tripId}")
+    public ResponseEntity<TripResponseDto> getTripWithItinerary(@PathVariable("tripId") int tripId) {
+        TripResponseDto trip = tripService.getTripWithItinerary(tripId);
+        if (trip == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(trip);
+    }
+
 }

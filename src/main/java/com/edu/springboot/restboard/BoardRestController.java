@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.edu.springboot.jdbc.TripMapper;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
@@ -92,14 +94,35 @@ public class BoardRestController {
 		return boardDTO;
 	}
 	
+	@Autowired
+	TripMapper tripMapper;
+	
 	@PostMapping("/restBoardWrite.do")
-	public Map<String, Integer> restBoardWrite(@RequestBody BoardDTO boardDTO) {
-			    		
-		int result = dao.write(boardDTO);
-					
-		Map<String, Integer> map = new HashMap<>();
-		map.put("result", result);
-		return map;
+	public Map<String, Integer> restBoardWrite(@RequestBody Map<String, Object> requestData) {
+
+	    BoardDTO boardDTO = new BoardDTO();
+	    boardDTO.setTitle((String) requestData.get("title"));
+	    boardDTO.setContent((String) requestData.get("content"));
+	    boardDTO.setNickname((String) requestData.get("nickname"));
+	    boardDTO.setBoard_cate((Integer) requestData.get("board_cate"));
+	    boardDTO.setTripId((Integer) requestData.get("tripId"));
+
+	    // ✅ tripId 가져오기 (Qna 게시판은 tripId 없음)
+	    Integer tripId = (Integer) requestData.get("tripId");
+
+	    if (tripId != null) {
+	        // ✅ 후기 게시판에서 TRIP_REVIEW의 IMAGE 가져오기
+	        String image = tripMapper.getTripById(tripId).getImage();
+	        boardDTO.setAttached_file(image != null ? image : "");  // null 방지 (빈 문자열로 저장)
+	    } else {
+	        boardDTO.setAttached_file("");  // Qna 게시판에서는 빈 문자열 저장
+	    }
+
+	    int result = dao.write(boardDTO);
+
+	    Map<String, Integer> response = new HashMap<>();
+	    response.put("result", result);
+	    return response;
 	}
 
 	@PatchMapping("/increaseLikeCount.do")
