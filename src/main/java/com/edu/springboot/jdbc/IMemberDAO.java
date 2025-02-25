@@ -1,7 +1,12 @@
 package com.edu.springboot.jdbc;
 
 import java.util.List;
-import org.apache.ibatis.annotations.*;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface IMemberDAO {
@@ -24,4 +29,15 @@ public interface IMemberDAO {
     @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "USER_ID") // 자동 증가된 USER_ID 반환
     void createUser(MemberDTO user);
 	Integer findUserIdByEmail(String email);
+
+    // ✅ 비밀번호 찾기 - 인증번호 저장
+    int updateVerificationCode(@Param("email") String email, @Param("code") String code);
+
+    // ✅ 비밀번호 찾기 - 인증번호 조회
+    String getVerificationCode(@Param("email") String email);
+    
+    @Select("SELECT * FROM USERS WHERE USER_ID = #{userId}")
+    MemberDTO selectById(@Param("userId") Long userId);
+
+    
 }
