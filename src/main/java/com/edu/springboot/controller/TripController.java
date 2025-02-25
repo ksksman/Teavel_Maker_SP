@@ -1,9 +1,9 @@
 package com.edu.springboot.controller;
 
+import com.edu.springboot.dto.TripParticipantDto;
 import com.edu.springboot.dto.TripRequestDto;
 import com.edu.springboot.dto.TripResponseDto;
 import com.edu.springboot.dto.TripReviewDto;
-import com.edu.springboot.dto.ImageDto;
 import com.edu.springboot.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/trips")
 public class TripController {
@@ -22,14 +21,13 @@ public class TripController {
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createTrip(@RequestBody TripRequestDto tripRequest) {
         tripService.createTrip(tripRequest);
-
-        return ResponseEntity.ok(Map.of("message", "여행이 저장되었습니다.", "tripId", tripRequest.getTripId()));
+        return ResponseEntity.ok(Map.of("message", "여행이 생성되었습니다.", "tripId", tripRequest.getTripId()));
     }
 
+    // 수정: 사용자 ID를 받아서 생성한 여행과 참여한 여행을 모두 조회하도록 함
     @GetMapping
-    public ResponseEntity<List<TripResponseDto>> getTrips() {
-        List<TripResponseDto> trips = tripService.getAllTrips();
-        return ResponseEntity.ok(trips);
+    public ResponseEntity<List<TripResponseDto>> getAllTrips(@RequestParam("userId") int userId) {
+        return ResponseEntity.ok(tripService.getAllTrips(userId));
     }
 
     @GetMapping("/{tripId}")
@@ -50,8 +48,8 @@ public class TripController {
 
     @PutMapping("/{tripId}/review/image")
     public ResponseEntity<String> updateTripReviewImage(@PathVariable("tripId") int tripId,
-                                                        @RequestBody ImageDto imageDto) {
-        String imageUrl = imageDto.getImage();
+                                                        @RequestBody Map<String, String> payload) {
+        String imageUrl = payload.get("image");
         if (imageUrl == null || imageUrl.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("유효한 이미지 URL이 제공되지 않았습니다.");
         }
@@ -63,5 +61,20 @@ public class TripController {
     public ResponseEntity<String> deleteTrip(@PathVariable("tripId") int tripId) {
         tripService.deleteTrip(tripId);
         return ResponseEntity.ok("여행이 삭제되었습니다.");
+    }
+    
+    @PostMapping("/{tripId}/participants")
+    public ResponseEntity<Map<String, Object>> addTripParticipant(
+            @PathVariable("tripId") int tripId,
+            @RequestBody Map<String, Integer> payload) {
+        int userId = payload.get("userId");
+        tripService.addTripParticipant(tripId, userId);
+        return ResponseEntity.ok(Map.of("message", "동행자가 추가되었습니다."));
+    }
+    
+    @GetMapping("/{tripId}/participants")
+    public ResponseEntity<List<TripParticipantDto>> getTripParticipants(@PathVariable("tripId") int tripId) {
+        List<TripParticipantDto> participants = tripService.getTripParticipants(tripId);
+        return ResponseEntity.ok(participants);
     }
 }

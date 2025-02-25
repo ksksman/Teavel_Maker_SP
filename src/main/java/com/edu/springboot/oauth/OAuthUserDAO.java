@@ -42,3 +42,4 @@ public interface OAuthUserDAO {
     @Update("UPDATE USER_OAUTH SET NICKNAME = #{nickname} WHERE PROVIDER_USER_ID = #{providerUserId}")
     void updateNickname(@Param("nickname") String nickname, @Param("providerUserId") String providerUserId);
 }
+
