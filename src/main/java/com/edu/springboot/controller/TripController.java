@@ -77,4 +77,11 @@ public class TripController {
         List<TripParticipantDto> participants = tripService.getTripParticipants(tripId);
         return ResponseEntity.ok(participants);
     }
+    @GetMapping("/tripWithItinerary/{tripId}")
+    public ResponseEntity<TripResponseDto> getTripWithItinerary(@PathVariable("tripId") int tripId) {
+        TripResponseDto trip = tripService.getTripWithItinerary(tripId);
+        if (trip == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(trip);
+    }
+
 }

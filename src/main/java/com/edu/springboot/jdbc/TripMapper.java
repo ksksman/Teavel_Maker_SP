@@ -62,9 +62,15 @@ public interface TripMapper {
     @Delete("DELETE FROM TRIP WHERE TRIP_ID = #{tripId}")
     int deleteTrip(@Param("tripId") int tripId);
 
+
     // 일정(관광지) 목록 조회 (별도 DTO ItineraryDto 사용)
     @Select("SELECT ITINERARY_ID, TRIP_ID, TO_CHAR(ITINERARY_DATE, 'YYYY-MM-DD') as itineraryDate, SEQ, PLACE_NAME as placeName " +
             "FROM TRIP_ITINERARY WHERE TRIP_ID = #{tripId} ORDER BY ITINERARY_DATE, SEQ")
     List<ItineraryDto> getItinerariesByTripId(@Param("tripId") int tripId);
+
+    
+    @Select("SELECT ITINERARY_DATE, PLACE_NAME " +
+            "FROM TRIP_ITINERARY WHERE TRIP_ID = #{tripId} ORDER BY ITINERARY_DATE, SEQ")
+    List<ItineraryDto> getItineraryByTripId(@Param("tripId") int tripId);
 
 }

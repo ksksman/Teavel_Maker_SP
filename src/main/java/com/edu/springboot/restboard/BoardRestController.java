@@ -99,12 +99,15 @@ public class BoardRestController {
 	
 	@PostMapping("/restBoardWrite.do")
 	public Map<String, Integer> restBoardWrite(@RequestBody Map<String, Object> requestData) {
-	    
+
 	    BoardDTO boardDTO = new BoardDTO();
 	    boardDTO.setTitle((String) requestData.get("title"));
 	    boardDTO.setContent((String) requestData.get("content"));
 	    boardDTO.setNickname((String) requestData.get("nickname"));
 	    boardDTO.setBoard_cate((Integer) requestData.get("board_cate"));
+
+	    boardDTO.setTripId((Integer) requestData.get("tripId"));
+
 
 	    // ✅ tripId 가져오기 (Qna 게시판은 tripId 없음)
 	    Integer tripId = (Integer) requestData.get("tripId");
