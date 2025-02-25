@@ -12,12 +12,14 @@ public class TripResponseDto {
     private String status;
     private String review;
     private double rating;
-    private String image;  // TRIP_REVIEW 테이블의 IMAGE 컬럼
-
-    // 날짜별 일정: key는 날짜(YYYY-MM-DD), value는 placeName 목록
+    private String image;
+    
+    // 일정 관련
     private Map<String, List<String>> itinerary;
-    // 일정 날짜 목록
     private List<String> itineraryDates;
+    
+    // 동행자(참여자) 닉네임 목록
+    private List<String> participantNames;
 
     // Getters & Setters
     public int getTripId() { return tripId; }
@@ -41,7 +43,9 @@ public class TripResponseDto {
 
     public Map<String, List<String>> getItinerary() { return itinerary; }
     public void setItinerary(Map<String, List<String>> itinerary) { this.itinerary = itinerary; }
-
     public List<String> getItineraryDates() { return itineraryDates; }
     public void setItineraryDates(List<String> itineraryDates) { this.itineraryDates = itineraryDates; }
+    
+    public List<String> getParticipantNames() { return participantNames; }
+    public void setParticipantNames(List<String> participantNames) { this.participantNames = participantNames; }
 }
