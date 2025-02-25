@@ -125,13 +125,13 @@ public class BoardRestController {
 	}
 
 
-	@PatchMapping("/increaseLikeCount.do")
-    public Map<String, Integer> increaseLikeCount(BoardDTO boardDTO) {
-        int result = dao.increaseLikeCount(boardDTO);
-        Map<String, Integer> map = new HashMap<>();
-        map.put("result", result);
-        return map;
-    }
+//	@PatchMapping("/increaseLikeCount.do")
+//    public Map<String, Integer> increaseLikeCount(BoardDTO boardDTO) {
+//        int result = dao.increaseLikeCount(boardDTO);
+//        Map<String, Integer> map = new HashMap<>();
+//        map.put("result", result);
+//        return map;
+//    }
 
     @PatchMapping("/increaseViewCount.do")
     public Map<String, Integer> increaseViewCount(BoardDTO boardDTO) {
@@ -173,12 +173,45 @@ public class BoardRestController {
         return dao.getPopularReviews(parameterDTO);
     }
     
-    // ALHomePage.jsx 에서 인기 Top3 후기글 요청하는 API
+    // ALHomePage.jsx 에서 인기 Top6 후기글 요청하는 API
     @GetMapping("/topLikedReviews.do")
     public List<BoardDTO> getTopLikedReviews() {
         return dao.getTopLikedReviews();
     }
     
+    // ✅ 특정 사용자가 게시물에 좋아요를 눌렀는지 확인
+    @GetMapping("/checkLike")
+    public boolean checkLike(@RequestParam("userId") int userId, @RequestParam("boardIdx") int boardIdx) {
+        return dao.checkIfUserLiked(userId, boardIdx) > 0;
+    }
+
+    // ✅ 좋아요 추가 (boards 테이블의 like_count 증가)
+    @PostMapping("/addLike")
+    public ResponseEntity<String> addLike(@RequestParam("userId") int userId, @RequestParam("boardIdx") int boardIdx) {
+        dao.addLike(userId, boardIdx);
+        dao.increaseLikeCount(boardIdx);  // like_count 증가
+        return ResponseEntity.ok("좋아요 추가 완료");
+    }
+
+    // ✅ 좋아요 취소 (boards 테이블의 like_count 감소)
+    @DeleteMapping("/removeLike")
+    public ResponseEntity<String> removeLike(@RequestParam("userId") int userId, @RequestParam("boardIdx") int boardIdx) {
+        dao.removeLike(userId, boardIdx);
+        dao.decreaseLikeCount(boardIdx);  // like_count 감소
+        return ResponseEntity.ok("좋아요 취소 완료");
+    }
+
+    // ✅ 사용자가 좋아요한 여행 목록 가져오기
+    @GetMapping("/likedReviews")
+    public List<BoardDTO> getLikedReviews(@RequestParam("userId") int userId) {
+        return dao.getLikedReviews(userId);
+    }
+    
+    @GetMapping("/likedPosts.do")
+    public List<BoardDTO> getLikedPosts(@RequestParam("userId") int userId) {
+        return dao.getLikedPosts(userId);
+    }
+
 }
 
 

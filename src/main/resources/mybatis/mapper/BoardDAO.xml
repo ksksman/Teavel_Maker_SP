@@ -81,10 +81,10 @@
 
 	
 	<!-- 좋아요 증가 -->
-	<update id="increaseLikeCount" 
+	<!-- <update id="increaseLikeCount" 
 		parameterType="com.edu.springboot.restboard.ParameterDTO">
         UPDATE boards SET like_count = like_count + 1 WHERE board_idx = #{board_idx}
-    </update>
+    </update> -->
 
 	<!-- 조회수 증가 -->
     <update id="increaseViewCount"  
@@ -110,7 +110,17 @@
 	        SELECT * FROM boards 
 	        WHERE board_cate = 1 
 	        ORDER BY like_count DESC
-	    ) WHERE ROWNUM &lt;= 3
+	    ) WHERE ROWNUM &lt;= 6
+	</select>
+	    
+    <select id="getLikedPosts"
+	    parameterType="int"
+	    resultType="com.edu.springboot.restboard.BoardDTO">
+	    SELECT b.*
+	    FROM boards b
+	    INNER JOIN user_likes lp ON b.board_idx = lp.board_idx
+	    WHERE lp.user_id = #{userId}
+	    ORDER BY b.board_idx DESC
 	</select>
 	    
 </mapper>
