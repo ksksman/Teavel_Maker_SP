@@ -18,8 +18,11 @@ public class TripResponseDto {
     private Map<String, List<String>> itinerary;
     private List<String> itineraryDates;
     
-    // 동행자(참여자) 닉네임 목록
+    // 동행자(참가자) 닉네임 목록
     private List<String> participantNames;
+    
+    // 방장(여행 생성자) 닉네임 추가
+    private String creatorNickname;
 
     // Getters & Setters
     public int getTripId() { return tripId; }
@@ -48,4 +51,7 @@ public class TripResponseDto {
     
     public List<String> getParticipantNames() { return participantNames; }
     public void setParticipantNames(List<String> participantNames) { this.participantNames = participantNames; }
+    
+    public String getCreatorNickname() { return creatorNickname; }
+    public void setCreatorNickname(String creatorNickname) { this.creatorNickname = creatorNickname; }
 }

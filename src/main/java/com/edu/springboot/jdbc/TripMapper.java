@@ -80,10 +80,13 @@ public interface TripMapper {
     @Select("SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM BOARDS WHERE TRIPID = #{tripId}")
     boolean isTripAlreadyShared(@Param("tripId") int tripId);
 
-    @Select("SELECT COUNT(T.TRIP_ID) AS tripCount, U.nickname, U.email " +
-            "FROM USERS U LEFT JOIN TRIP T ON U.user_id = T.user_id " +
-            "WHERE U.user_id = #{userId} " +
-            "GROUP BY U.nickname, U.email")
+    @Select("SELECT " +
+            "   (SELECT COUNT(*) FROM TRIP WHERE USER_ID = #{userId}) + " +
+            "   (SELECT COUNT(*) FROM TRIP_PARTICIPANTS WHERE USER_ID = #{userId}) AS tripCount, " +
+            "   U.nickname AS nickname, " +
+            "   U.email AS email " +
+            "FROM USERS U " +
+            "WHERE U.user_id = #{userId}")
     @ResultType(Map.class)
     Map<String, Object> getTripInfoByUserId(@Param("userId") int userId);
 
