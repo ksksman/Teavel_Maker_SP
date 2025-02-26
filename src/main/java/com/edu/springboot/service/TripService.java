@@ -167,5 +167,13 @@ public class TripService {
 
         return trip;
     }
+    
+    public String getTripStatus(int tripId) {
+        return tripMapper.getTripStatus(tripId);
+    }
+
+    public boolean isTripAlreadyShared(int tripId) {
+        return tripMapper.isTripAlreadyShared(tripId);
+    }
 
 }
