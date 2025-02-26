@@ -6,6 +6,7 @@ import com.edu.springboot.dto.TripResponseDto;
 import com.edu.springboot.dto.TripReviewDto;
 import org.apache.ibatis.annotations.*;
 import java.util.List;
+import java.util.Map;
 
 @Mapper
 public interface TripMapper {
@@ -78,6 +79,13 @@ public interface TripMapper {
 
     @Select("SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM BOARDS WHERE TRIPID = #{tripId}")
     boolean isTripAlreadyShared(@Param("tripId") int tripId);
+
+    @Select("SELECT COUNT(T.TRIP_ID) AS tripCount, U.nickname, U.email " +
+            "FROM USERS U LEFT JOIN TRIP T ON U.user_id = T.user_id " +
+            "WHERE U.user_id = #{userId} " +
+            "GROUP BY U.nickname, U.email")
+    @ResultType(Map.class)
+    Map<String, Object> getTripInfoByUserId(@Param("userId") int userId);
 
 
 
