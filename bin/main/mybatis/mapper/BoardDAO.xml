@@ -70,16 +70,17 @@
 	</select>
 	
 	<insert id="write"
+        parameterType="com.edu.springboot.restboard.BoardDTO">
+    INSERT INTO boards
+        (board_idx, board_cate, nickname, title, content, post_date, view_count, like_count, attached_file
+        <if test="board_cate == 1">, tripId</if>)
+    VALUES
+        (boards_seq.nextval, #{board_cate}, #{nickname}, #{title}, #{content}, SYSDATE, 0, 0, 
+        <if test="attached_file != null and attached_file != ''">#{attached_file}</if>
+        <if test="attached_file == null or attached_file == ''">NULL</if>
+        <if test="board_cate == 1">, #{tripId}</if>)
+</insert>
 
-		parameterType="com.edu.springboot.restboard.BoardDTO">
-	    INSERT INTO boards
-	        (board_idx, board_cate, nickname, title, content, post_date, view_count, like_count, attached_file, tripId)
-	    VALUES
-	        (boards_seq.nextval, #{board_cate}, #{nickname}, #{title}, #{content}, SYSDATE, 0, 0, 
-	        <if test="attached_file != null and attached_file != ''">#{attached_file}</if>
-	        <if test="attached_file == null or attached_file == ''">NULL</if>, #{tripId})
-
-	</insert>
 
 	
 	<!-- 좋아요 증가 -->

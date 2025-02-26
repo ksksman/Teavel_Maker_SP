@@ -99,5 +99,12 @@ public class TripController {
         return response;
     }
 
+    // ✅ 특정 사용자의 정보와 여행 개수 반환 API
+    @GetMapping("/user-info")
+    public ResponseEntity<Map<String, Object>> getUserTripInfo(@RequestParam("userId") int userId) {
+        Map<String, Object> userInfo = tripService.getUserTripInfo(userId);
+        return ResponseEntity.ok(userInfo);
+    }
+
 
 }

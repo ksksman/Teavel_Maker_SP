@@ -176,4 +176,8 @@ public class TripService {
         return tripMapper.isTripAlreadyShared(tripId);
     }
 
+    public Map<String, Object> getUserTripInfo(int userId) {
+        return tripMapper.getTripInfoByUserId(userId);
+    }
+
 }
