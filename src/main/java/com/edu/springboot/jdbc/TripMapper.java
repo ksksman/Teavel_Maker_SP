@@ -72,5 +72,13 @@ public interface TripMapper {
     @Select("SELECT ITINERARY_DATE, PLACE_NAME " +
             "FROM TRIP_ITINERARY WHERE TRIP_ID = #{tripId} ORDER BY ITINERARY_DATE, SEQ")
     List<ItineraryDto> getItineraryByTripId(@Param("tripId") int tripId);
+    
+    @Select("SELECT STATUS FROM TRIP_REVIEW WHERE TRIP_ID = #{tripId}")
+    String getTripStatus(@Param("tripId") int tripId);
+
+    @Select("SELECT CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END FROM BOARDS WHERE TRIPID = #{tripId}")
+    boolean isTripAlreadyShared(@Param("tripId") int tripId);
+
+
 
 }

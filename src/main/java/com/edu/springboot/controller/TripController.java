@@ -8,6 +8,8 @@ import com.edu.springboot.service.TripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,5 +85,19 @@ public class TripController {
         if (trip == null) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(trip);
     }
+    
+    @GetMapping("/checkTripShared")
+    public Map<String, Object> checkTripShared(@RequestParam("tripId") int tripId) {
+        Map<String, Object> response = new HashMap<>();
+        
+        String status = tripService.getTripStatus(tripId); // 여행 상태 조회
+        boolean alreadyShared = tripService.isTripAlreadyShared(tripId); // 이미 공유된 여행인지 확인
+
+        response.put("alreadyShared", alreadyShared);
+        response.put("status", status);
+
+        return response;
+    }
+
 
 }
